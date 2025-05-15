@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const yellow_house = document.getElementById("yellow-house");
   const red_house = document.getElementById("red-house");
   const rollDiceBtn = document.getElementById("roll-btn");
-  const dice_img = document.getElementById("diceImg");
+  const rollDice = document.getElementById("diceImg");
 
   // console.log(red_house);
 
@@ -105,8 +105,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentPlayerTurnStatus = true;
   let teamHasBonus = false;
 
-  // let diceResult;
-
+  let diceResult;
+  // const Player = new Token(position, boardColor, 0, 0, homeEntry, gameEntry);
   class Token {
     constructor(PlayerId, team, position, score, homePathEntry, gameEntry) {
       this.team = team;
@@ -120,8 +120,15 @@ document.addEventListener("DOMContentLoaded", () => {
       this.initailPosition = position; // return piece to start position
     }
 
-    unlockPiece() {
+    // methods
+    unlockPiece(startCellId) {
       this.status = true;
+      const tokenEl = document.getElementById(this.PlayerId);
+      const startCell = document.getElementById(`cell-${this.gameEntry}`);
+      if (tokenEl && startCell) {
+        startCell.appendChild(tokenEl);
+        this.position = parseInt(this.gameEntry); // Set actual board position
+      }
     }
     updatePosition(position) {
       this.position = this.position;
@@ -136,8 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const nextPositionCell = document.getElementById(nextPosition);
-      if (nextPositionCell) {
-        const tokenEl = document.getElementById(this.id);
+      const tokenEl = document.getElementById(this.PlayerId);
+
+      if (nextPositionCell && tokenEl) {
         nextPositionCell.appendChild(tokenEl);
         this.position = nextPosition;
       }
@@ -149,20 +157,20 @@ document.addEventListener("DOMContentLoaded", () => {
   let numberOfPlayers = 4;
 
   let boardDetails = [
-    { boardColor: "blue", board: blue_house, homeEntry: "14", gameEntry: "b1" },
+    { boardColor: "blue", board: blue_house, homeEntry: "1", gameEntry: "14" },
     {
       boardColor: "yellow",
       board: yellow_house,
-      homeEntry: "12",
-      gameEntry: "b1",
+      homeEntry: "1",
+      gameEntry: "40",
     },
     {
       boardColor: "green",
       board: green_house,
-      homeEntry: "40",
-      gameEntry: "b1",
+      homeEntry: "4",
+      gameEntry: "27",
     },
-    { boardColor: "red", board: red_house, homeEntry: "1", gameEntry: "b1" },
+    { boardColor: "red", board: red_house, homeEntry: "r1", gameEntry: "1" },
   ];
 
   for (let i = 0; i < numberOfPlayers; i++) {
@@ -176,13 +184,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const span = document.createElement("span");
       span.classList.add("token", boardColor);
       span.addEventListener("click", () => {
-        //user turn
+        const allTokens = document.querySelectorAll(".token.selected");
+        allTokens.forEach((token) => token.classList.remove("selected"));
+        // Select the clicked token
+        span.classList.add("selected");
       });
 
       // let pieceID = `${boardColor}${i}`;
-      let position = `${i}_${boardColor}`;
+      let position = `${j}_${boardColor}`;
 
-      const Player = new Token(boardColor, position, 0, homeEntry, gameEntry);
+      const Player = new Token(position, boardColor, 0, 0, homeEntry, gameEntry);
       span.setAttribute("id", position);
       playerPieces.push(Player);
       parentDiv.append(span);
@@ -190,19 +201,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
     boardDetails[i].board.append(parentDiv);
   }
-});
 
-if (numberOfPlayers == 2) {
-  playerTurn = ["blue", "yellow"];
-} else if (numberOfPlayers == 3) {
-  playerTurn = ["red", "blue", "green"];
-} else playerTurn = ["red", "blue", "green", "yellow"];
+  if (numberOfPlayers == 2) {
+    playerTurn = ["blue", "yellow"];
+  } else if (numberOfPlayers == 3) {
+    playerTurn = ["red", "blue", "green"];
+  } else playerTurn = ["red", "blue", "green", "yellow"];
 
-rollDiceBtn.addEventListener("click", () => {
-  rollDice.src = rollDiceGif.src;
-  diceResult = Math.floor(Math.random() * 6) + 1;
+  const rollDiceGif = new Image();
+  rollDiceGif.src = "../../images/animated-dice-image-0040.gif";
 
-  setTimeout(() => {
-    dice_img.src = `/images/dice_${diceResult}.png`
-  }, 600)
+  rollDiceBtn.addEventListener("click", () => {
+    rollDice.src = rollDiceGif.src;
+    diceResult = Math.floor(Math.random() * 6) + 1;
+
+    setTimeout(() => {
+      rollDice.src = `/images/dice_${diceResult}.png`;
+      document.getElementById("dice-result").textContent = `Roll: ${diceResult}`;
+
+      const selected = document.querySelector(".token.selected");
+      // if (!selected) {
+      //   alert("Please select a token to move.");
+      //   return;
+      // }
+
+
+    const selectedId = selected.id;
+    console.log(selectedId);
+    
+    console.log(playerPieces);
+    
+    const tokenObj = playerPieces.find(p => p.PlayerId === selectedId);
+    console.log(tokenObj);
+    
+
+    if (!tokenObj) {
+      alert("Invalid token.");
+      return;
+    }
+
+    if (!tokenObj.status && diceResult === 6) {
+      tokenObj.unlockPiece();
+      alert("Piece unlocked! Roll again.");
+      return;
+    }
+
+    if (tokenObj.status) {
+      tokenObj.movePiece(diceResult);
+      if (diceResult === 6) {
+        alert("You rolled a 6! Play again.");
+      } else {
+        // switch to next player's turn here
+      }
+    } else {
+      alert("This piece is still locked. You need a 6 to unlock it.");
+    }
+    }, 600);
+
+    if (diceResult === 6) {
+      movePiece();
+      alert("ok");
+    }
+  });
 });
