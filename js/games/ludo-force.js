@@ -1,91 +1,3 @@
-// Select the game board container
-// const gameArea = document.getElementById("game-area");
-// const gameBoard = document.getElementById("game-board");
-// const rollBtn = document.getElementById("roll-btn");
-// const diceResult = document.getElementById("dice-result");
-// const token = document.getElementById("token");
-
-// house path
-// const redHouse = ["r1", "r2", "r3", "r4", "r5"];
-
-// let currentCellId = 1; // Start from cell with id="1"
-// let inHouse = false;
-// let houseIndex = 0;
-
-// roll dice
-// rollBtn.addEventListener("click", () => {
-
-//   const diceRoll = Math.floor(Math.random() * 6) + 1;
-//   diceResult.textContent = `Roll: ${diceRoll}`;
-
-//   let nextCellId = currentCellId + diceRoll;
-//   const nextCell = document.getElementById(`cell-${nextCellId}`);
-
-//   // Prevent moving out of board
-//   if (!nextCell) {
-//     alert("Move out of range");
-//     return;
-//   }
-
-//   if (selectedToken) {
-//     // Move token
-//   nextCell.appendChild(token);
-//   currentCellId = nextCellId;
-//   }
-// });
-
-// 1. Handle selecting a token
-// document.querySelectorAll(".token").forEach(token => {
-//   token.addEventListener("click", () => {
-//     selectedToken = token;
-//     // Highlight it visually if you want
-//     document.querySelectorAll(".token").forEach(t => t.classList.remove("selected"));
-//     token.classList.add("selected");
-//   });
-// });
-
-// roll dice
-// rollBtn.addEventListener("click", () => {
-//   const diceRoll = Math.floor(Math.random() * 6) + 1;
-//   diceResult.textContent = `Roll: ${diceRoll}`;
-
-//   let nextCellId = currentCellId + diceRoll;
-//   const nextCell = document.getElementById(`cell-${nextCellId}`);
-
-//   // Prevent moving out of board
-//   if (!nextCell) {
-//     alert("Move out of range");
-//     return;
-//   }
-
-//   if (selectedToken) {
-//     // Move token
-//     nextCell.appendChild(token);
-//     currentCellId = nextCellId;
-//   }
-// });
-
-// 1. Handle selecting a token
-// document.querySelectorAll(".token").forEach((token) => {
-//   token.addEventListener("click", () => {
-//     if (rolledValue === null) {
-//       alert("Please roll the dice first.");
-//       return;
-//     }
-
-//     const tokenId = token.dataset.id;
-//     let current = tokenPositions[tokenId];
-//     let next = current + rolledValue;
-
-//     selectedToken = token;
-//     // Highlight it visually if you want
-//     document
-//       .querySelectorAll(".token")
-//       .forEach((t) => t.classList.remove("selected"));
-//     token.classList.add("selected");
-//   });
-// });
-
 // importing all boards
 document.addEventListener("DOMContentLoaded", () => {
   const green_house = document.getElementById("green-house");
@@ -106,18 +18,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let teamHasBonus = false;
 
   let diceResult;
-  // const Player = new Token(position, boardColor, 0, 0, homeEntry, gameEntry);
+  // const Player = new Token(position, boardColor, 0, 0, homePathEntry, gameEntry);
   class Token {
     constructor(PlayerId, team, position, score, homePathEntry, gameEntry) {
       this.team = team;
       this.position = position;
       this.score = score;
-      this.homePathEntry = homePathEntry;
+      this.homePathEntry = homePathEntry; // Number
       this.PlayerId = PlayerId;
       this.gameEntry = gameEntry;
       this.status = false; // when true
 
       this.initailPosition = position; // return piece to start position
+      this.stepsMoved = 0;
     }
 
     // methods
@@ -127,29 +40,58 @@ document.addEventListener("DOMContentLoaded", () => {
       const startCell = document.getElementById(`cell-${this.gameEntry}`);
       if (tokenEl && startCell) {
         startCell.appendChild(tokenEl);
-        this.position = parseInt(this.gameEntry); // Set actual board position
+        this.position = this.gameEntry; // Set actual board position
       }
     }
     updatePosition(position) {
       this.position = this.position;
     }
     movePiece(steps) {
-      // position to move the piece
       let nextPosition = this.position + steps;
-
-      if (nextPosition > 72) {
-        alert("Can't move: out of bounds");
-        return;
-      }
-
-      const nextPositionCell = document.getElementById(nextPosition);
+      const nextPositionCell = document.getElementById(`cell-${nextPosition}`);
+      
       const tokenEl = document.getElementById(this.PlayerId);
 
+      this.stepsMoved += steps; // track total movement
+
+      if (nextPosition > 52) {
+        nextPosition -= 52;
+      }
+
+      // position to move the piece inside home
+      // if (nextPosition >= this.homeEntryCell) {
+      //   this.homePathEntry(nextPosition - this.homeEntryCell);
+      //   return;
+      // }
+      
+      // position to move the piece
       if (nextPositionCell && tokenEl) {
         nextPositionCell.appendChild(tokenEl);
         this.position = nextPosition;
       }
     }
+    enterHomePath() {
+      const tokenEl = document.getElementById(this.PlayerId);
+      let homeIndex = this.stepsMoved + steps;
+
+      // if (homeIndex > 5 || homeIndex < 1) {
+      //   alert("Can't move: overshoot home path");
+      //   return;
+      // }
+
+      const homeCellId = `cell-${this.team}-home-${homeIndex + 1}`;
+      const homeCell = document.getElementById(homeCellId);
+      console.log(homeCell);
+
+      if (homeCell && tokenEl) {
+        homeCell.appendChild(tokenEl);
+        this.position = `cell-${this.team}-home-${homeIndex + 1}` + steps; // update to home path
+        console.log(`${this.PlayerId} entered home path at ${homeCellId}`);
+      } else {
+        alert("Invalid home cell.");
+      }
+    }
+
     // function to return the piece to the locked position when killed
     sentMeToBoard() {}
   }
@@ -157,25 +99,35 @@ document.addEventListener("DOMContentLoaded", () => {
   let numberOfPlayers = 4;
 
   let boardDetails = [
-    { boardColor: "blue", board: blue_house, homeEntry: "1", gameEntry: "14" },
+    {
+      boardColor: "blue",
+      board: blue_house,
+      homePathEntry: "12",
+      gameEntry: 14,
+    },
     {
       boardColor: "yellow",
       board: yellow_house,
-      homeEntry: "1",
-      gameEntry: "40",
+      homePathEntry: "38",
+      gameEntry: 40,
     },
     {
       boardColor: "green",
       board: green_house,
-      homeEntry: "4",
-      gameEntry: "27",
+      homePathEntry: "25",
+      gameEntry: 27,
     },
-    { boardColor: "red", board: red_house, homeEntry: "r1", gameEntry: "1" },
+    {
+      boardColor: "red",
+      board: red_house,
+      homePathEntry: "51",
+      gameEntry: 1,
+    },
   ];
 
   for (let i = 0; i < numberOfPlayers; i++) {
     let boardColor = boardDetails[i].boardColor;
-    let homeEntry = boardDetails[i].homeEntry;
+    let homePathEntry = boardDetails[i].homePathEntry;
     let gameEntry = boardDetails[i].gameEntry;
 
     const parentDiv = document.createElement("div");
@@ -193,7 +145,14 @@ document.addEventListener("DOMContentLoaded", () => {
       // let pieceID = `${boardColor}${i}`;
       let position = `${j}_${boardColor}`;
 
-      const Player = new Token(position, boardColor, 0, 0, homeEntry, gameEntry);
+      const Player = new Token(
+        position,
+        boardColor,
+        0,
+        0,
+        homePathEntry,
+        gameEntry
+      );
       span.setAttribute("id", position);
       playerPieces.push(Player);
       parentDiv.append(span);
@@ -217,7 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       rollDice.src = `/images/dice_${diceResult}.png`;
-      document.getElementById("dice-result").textContent = `Roll: ${diceResult}`;
+      document.getElementById("dice-result").textContent =
+        `Roll: ${diceResult}`;
 
       const selected = document.querySelector(".token.selected");
       // if (!selected) {
@@ -225,42 +185,38 @@ document.addEventListener("DOMContentLoaded", () => {
       //   return;
       // }
 
+      const selectedId = selected.id;
+      console.log(selectedId);
 
-    const selectedId = selected.id;
-    console.log(selectedId);
-    
-    console.log(playerPieces);
-    
-    const tokenObj = playerPieces.find(p => p.PlayerId === selectedId);
-    console.log(tokenObj);
-    
+      console.log(playerPieces);
 
-    if (!tokenObj) {
-      alert("Invalid token.");
-      return;
-    }
+      const tokenObj = playerPieces.find((p) => p.PlayerId === selectedId);
+      console.log(tokenObj);
 
-    if (!tokenObj.status && diceResult === 6) {
-      tokenObj.unlockPiece();
-      alert("Piece unlocked! Roll again.");
-      return;
-    }
-
-    if (tokenObj.status) {
-      tokenObj.movePiece(diceResult);
-      if (diceResult === 6) {
-        alert("You rolled a 6! Play again.");
-      } else {
-        // switch to next player's turn here
+      if (!tokenObj) {
+        alert("Invalid token.");
+        return;
       }
-    } else {
-      alert("This piece is still locked. You need a 6 to unlock it.");
-    }
-    }, 600);
 
-    if (diceResult === 6) {
-      movePiece();
-      alert("ok");
-    }
+      if (!tokenObj.status && diceResult === 6) {
+        tokenObj.unlockPiece();
+        alert("Piece unlocked! Roll again.");
+        return;
+      }
+
+      if (tokenObj.status) {
+        tokenObj.movePiece(diceResult);
+        console.log(diceResult);
+
+        if (diceResult === 6) {
+          alert("You rolled a 6! Play again.");
+        } else {
+          // switch to next player's turn here
+          // alert("next player turn")
+        }
+      } else {
+        alert("This piece is still locked. You need a 6 to unlock it.");
+      }
+    }, 600);
   });
 });
