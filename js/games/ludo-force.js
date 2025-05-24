@@ -452,7 +452,7 @@ window.addEventListener("DOMContentLoaded", () => {
         if (scoreOfSecondPiece > scoreOfFirstPiece) {
           if (!(await attemptMove(pieceUnSafe[1]))) return;
         } else {
-          if (!(await attemptMove(piece))) return;
+          if (!(await attemptMove(pieceUnSafe[0]))) return;
         }
       }
 
@@ -485,8 +485,104 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!(await attemptMove(pieceSafe[0]))) return;
           }
         }
-        return;
       }
+    }
+
+    // condition when the bot has 3 pieces unlocked
+    if (totalUnlockedPieces.length === 3) {
+      let pieceSafe = totalUnlockedPieces.filter((obj) =>
+        safePaths.includes(obj.position)
+      );
+      let pieceUnSafe = totalUnlockedPieces.filter(
+        (obj) => !safePaths.includes(obj.position)
+      );
+
+      if (pieceSafe.length === 0) {
+        let scoreOfFirstPiece = pieceSafe[0].score;
+        let scoreOfSecondPiece = pieceSafe[1].score;
+        let scoreOfThirdPiece = pieceSafe[2].score;
+
+        let greatestScore = Math.max(
+          scoreOfFirstPiece,
+          scoreOfSecondPiece,
+          scoreOfThirdPiece
+        );
+        let movingPiece = pieceUnSafe.find(
+          (obj) => obj.score === greatestScore
+        );
+        if (!(await attemptMove(movingPiece))) return;
+      }
+
+      if (pieceSafe.length === 1) {
+        let scoreOfFirstPiece = pieceSafe[0].score;
+        let scoreOfSecondPiece = pieceSafe[1].score;
+
+        if (scoreOfSecondPiece > scoreOfFirstPiece) {
+          if (!(await attemptMove(pieceUnSafe[1]))) return;
+        } else {
+          if (!(await attemptMove(pieceUnSafe[0]))) return;
+        }
+      }
+
+      if (
+        pieceSafe.length === 3 &&
+        (pieceSafe[0].position === pieceSafe[1].position) ===
+          pieceSafe[2].position
+      ) {
+        if (!(await attemptMove(pieceSafe[0]))) return;
+      }
+
+      if (pieceSafe.length === 2) {
+        if (!(await attemptMove(pieceUnSafe[0]))) return;
+      }
+
+      if (pieceSafe.length === 3) {
+        let opponentsBeforeFirstPiece = giveEnemiesBehindMe(pieceSafe[0]);
+        let opponentsBeforeSecondPiece = giveEnemiesBehindMe(pieceSafe[1]);
+        let opponentsBeforeThirdPiece = giveEnemiesBehindMe(pieceSafe[2]);
+
+        if (
+          opponentsBeforeFirstPiece < opponentsBeforeSecondPiece &&
+          opponentsBeforeFirstPiece < opponentsBeforeThirdPiece
+        ) {
+          if (!(await attemptMove(pieceSafe[0]))) return;
+        } else if (
+          opponentsBeforeSecondPiece < opponentsBeforeFirstPiece &&
+          opponentsBeforeSecondPiece < opponentsBeforeThirdPiece
+        ) {
+          if (!(await attemptMove(pieceSafe[1]))) return;
+        } else if (
+          opponentsBeforeThirdPiece < opponentsBeforeFirstPiece &&
+          opponentsBeforeThirdPiece < opponentsBeforeSecondPiece
+        ) {
+          if (!(await attemptMove(pieceSafe[2]))) return;
+        } else {
+          let piecesAtHomePath = piece_team.filter(
+            (obj) => obj.status === 1 && homePathArray.includes(obj.position)
+          );
+          let piecesNotAtHomePath = piece_team.filter(
+            (obj) => obj.status === 1 && !homePathArray.includes(obj.position)
+          );
+
+          piecesNotAtHomePath.sort((a, b) => a.score - b.score);
+
+          if (piecesNotAtHomePath.length > 0) {
+            if (!(await attemptMove(piecesNotAtHomePath[0]))) return;
+          } else {
+            for (let i = 0; i < piecesAtHomePath; i++) {
+              let movingPathArray = giveArrayForMovingPath(piecesAtHomePath[i])
+              if (movingPathArray.length === diceResult) {
+                isMoving = true
+                moveMyPiece(piecesAtHomePath[i])
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (!isMoving) {
+      nextTeamTurn()
     }
   };
 
