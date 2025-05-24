@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: "Lucida Grande";
 }
 :root {
   --red: #4caf4f;
@@ -12,9 +13,15 @@
 }
 .play-now-board {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-image: url('/images/ludoforce-bg.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-bottom: 100px;
 }
 .ludo-force-img {
   width: 150px;
@@ -22,8 +29,7 @@
 }
 .ludo-force-header {
   font-size: 25px;
-  font-family: "Lucida Grande";
-  /* color: #ffffff; */
+  color: var(--white);
   font-weight: 600;
   padding-top: 15px;
   padding-bottom: 35px;
@@ -50,6 +56,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 @media (min-width: 640px) {
   .ludo-force-img {
@@ -67,5 +74,8 @@
   .play-now-icon {
     width: 39px;
     height: 39px;
+  }
+  .play-now-board{
+    padding-bottom: 10px;
   }
 }

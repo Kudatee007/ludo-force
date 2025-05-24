@@ -14,16 +14,16 @@
   color: blue;
   background-color: blue;
 }
-.redLudoBox{
+.redLudoBox {
   background-color: red;
 }
-.blueLudoBox{
+.blueLudoBox {
   background-color: blue;
 }
-.yellowLudoBox{
+.yellowLudoBox {
   background-color: yellow;
 }
-.greenLudoBox{
+.greenLudoBox {
   background-color: green;
 }
 .game-area {
@@ -64,6 +64,7 @@
 }
 .blue-house {
   border: 35px solid blue;
+  background-color: rgb(68, 20, 20);
   display: grid;
   grid-column: 10 / span 6;
   grid-row: 1 / span 6;
@@ -82,58 +83,108 @@
   grid-column: 10 / span 6;
   grid-row: 10 / span 6;
 }
-.house {
+.board {
   display: grid;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
   align-items: center;
   gap: 0px;
 }
-  #roll-btn {
-    margin-top: 20px;
+.blue-house.active,
+.red-house.active,
+.green-house.active,
+.yellow-house.active {
+  animation: animateBoard 0.8s linear infinite;
+}
+@keyframes animateBoard {
+  0% {
+    filter: brightness(1.4);
   }
-  .line-through {
-    /* border: 15px solid orange; */
-    background-color: blue;
-    grid-column: 8 / span 1;
-  grid-row: 2/ span 5;
+  50% {
+    filter: brightness(1);
   }
-  .line-through2 {
-    /* border: 15px solid orange; */
-    background-color: blue;
-    grid-column: 9 / span 1;
+  100% {
+    filter: brightness(1.4);
+  }
+}
+
+#roll-btn {
+  margin-top: 20px;
+}
+.line-through {
+  /* border: 15px solid orange; */
+  background-color: blue;
+  grid-column: 8 / span 1;
+  grid-row: 2 / span 5;
+}
+.line-through2 {
+  /* border: 15px solid orange; */
+  background-color: blue;
+  grid-column: 9 / span 1;
   grid-row: 2;
-  }
-  /* .cell {
+}
+/* .cell {
     width: 35px;
     height: 35px;
     border: 0.1px solid black;
   } */
-  .token {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: inline-block;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 8px rgb(14, 13, 13);
-    /* background-color: rgba(255, 255, 255, 0.6); */
-  }
-  
-  /* Optional: center token in a cell */
-  .cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;  /* adjust size */
-    height: 35px; /* adjust size */
-    border: 0.1px solid #ccc;
-  }
-  
+.token {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgb(14, 13, 13);
+  /* background-color: rgba(255, 255, 255, 0.6); */
+}
+span {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgb(14, 13, 13);
+  /* background-color: rgba(255, 255, 255, 0.6); */
+}
+
+/* Optional: center token in a cell */
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px; /* adjust size */
+  height: 35px; /* adjust size */
+  border: 0.1px solid #ccc;
+}
+
 .selected {
-    border: 2px solid gold;
-    box-shadow: 0 0 8px gold;
-  }
-  .dice {
-    width: 50px;
-    height: 50px;
-  }
+  border: 2px solid gold;
+  box-shadow: 0 0 8px gold;
+}
+.dice {
+  width: 50px;
+  height: 50px;
+}
+:root {
+  --red: #4caf4f;
+  --blue: #2ea9f0;
+  --green: #4d4d4d;
+  --yellow: #717171;
+  --white: #ffffff;
+}
+#red-house div span {
+  background-color: red;
+}
+#yellow-house div span {
+  background-color: yellow;
+}
+#blue-house div span {
+  background-color: blue;
+}
+#green-house div span {
+  background-color: green;
+}
+/* .red-piece {
+  background-color: red;
+  color: red;
+} */

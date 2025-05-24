@@ -6,100 +6,119 @@
     <title>Ludo Force</title>
     <link rel="stylesheet" href="/css/games/ludo-force.css" />
     <link rel="stylesheet" href="/css/main.css" />
+    <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
   </head>
   <body>
     <h1>Ludo Force</h1>
+
     <section class="game-area" id="game-area">
       <div id="game-board" class="game-board">
-        <div class="cell" id="cell-11"></div>
-        <div class="cell" id="cell-12"></div>
-        <div class="cell" id="cell-13"></div>
-        <div class="cell" id="cell-10"></div>
-        <div class="cell blueLudoBox" id="cell-blue-home-1"></div>
-        <div class="cell blueLudoBox" id="cell-14"></div>
-        <div class="cell" id="cell-9"></div>
-        <div class="cell blueLudoBox" id="cell-blue-home-2"></div>
-        <div class="cell" id="cell-15"></div>
-        <div class="cell" id="cell-8"></div>
-        <div class="cell blueLudoBox" id="cell-blue-home-3"></div>
-        <div class="cell" id="cell-16"></div>
-        <div class="cell" id="cell-7"></div>
-        <div class="cell blueLudoBox" id="cell-blue-home-4"></div>
-        <div class="cell" id="cell-17"></div>
-        <div class="cell" id="cell-6"></div>
-        <div class="cell blueLudoBox" id="cell-blue-home-5"></div>
-        <div class="cell" id="cell-18"></div>
 
-        <div class="cell" id="cell-52"></div>
-        <div class="cell redLudoBox" id="cell-1"></div>
-        <div class="cell" id="cell-2"></div>
-        <div class="cell" id="cell-3"></div>
-        <div class="cell" id="cell-4"></div>
-        <div class="cell" id="cell-5"></div>
-        <div class="cell" id="cell-19"></div>
-        <div class="cell" id="cell-20"></div>
-        <div class="cell" id="cell-21"></div>
-        <div class="cell" id="cell-22"></div>
-        <div class="cell" id="cell-23"></div>
-        <div class="cell" id="cell-24"></div>
-        <div class="cell" id="cell-51"></div>
-        <div class="cell redLudoBox" id="cell-red-home-1"></div>
-        <div class="cell redLudoBox" id="cell-red-home-2"></div>
-        <div class="cell redLudoBox" id="cell-red-home-3"></div>
-        <div class="cell redLudoBox" id="cell-red-home-4"></div>
-        <div class="cell redLudoBox" id="cell-red-home-5"></div>
+        <!-- Blue side -->
+        <div class="cell" id="r11"></div>
+        <div class="cell" id="r12"></div>
+        <div class="cell" id="r13"></div>
+        <div class="cell" id="r10"></div>
+        <div class="cell blueLudoBox" id="bh1"></div>
+        <div class="cell blueLudoBox" id="b1"></div>
+        <div class="cell" id="r9"></div>
+        <div class="cell blueLudoBox" id="bh2"></div>
+        <div class="cell" id="b2"></div>
+        <div class="cell" id="r8"></div>
+        <div class="cell blueLudoBox" id="bh3"></div>
+        <div class="cell" id="b3"></div>
+        <div class="cell" id="r7"></div>
+        <div class="cell blueLudoBox" id="bh4"></div>
+        <div class="cell" id="b4"></div>
+        <div class="cell" id="r6"></div>
+        <div class="cell blueLudoBox" id="bh5"></div>
+        <div class="cell" id="b5"></div>
 
-        <div class="cell greenLudoBox" id="cell-green-home-5"></div>
-        <div class="cell greenLudoBox" id="cell-green-home-4"></div>
-        <div class="cell greenLudoBox" id="cell-green-home-3"></div>
-        <div class="cell greenLudoBox" id="cell-green-home-2"></div>
-        <div class="cell greenLudoBox" id="cell-green-home-1"></div>
-        <div class="cell" id="cell-25"></div>
-        <div class="cell" id="cell-50"></div>
-        <div class="cell" id="cell-49"></div>
-        <div class="cell" id="cell-48"></div>
-        <div class="cell" id="cell-47"></div>
-        <div class="cell" id="cell-46"></div>
-        <div class="cell" id="cell-45"></div>
-        <div class="cell" id="cell-31"></div>
-        <div class="cell" id="cell-30"></div>
-        <div class="cell" id="cell-29"></div>
-        <div class="cell" id="cell-28"></div>
-        <div class="cell greenLudoBox" id="cell-27"></div>
-        <div class="cell" id="cell-26"></div>
+        <!-- Red path -->
+        <div class="cell" id="y13"></div>
+        <div class="cell redLudoBox" id="r1"></div>
+        <div class="cell" id="r2"></div>
+        <div class="cell" id="r3"></div>
+        <div class="cell" id="r4"></div>
+        <div class="cell" id="r5"></div>
 
-        <div class="cell" id="cell-44"></div>
-        <div class="cell yellowLudoBox" id="cell-yellow-home-5"></div>
-        <div class="cell" id="cell-32"></div>
-        <div class="cell" id="cell-43"></div>
-        <div class="cell yellowLudoBox" id="cell-yellow-home-4"></div>
-        <div class="cell" id="cell-33"></div>
-        <div class="cell" id="cell-42"></div>
-        <div class="cell yellowLudoBox" id="cell-yellow-home-3"></div>
-        <div class="cell" id="cell-34"></div>
-        <div class="cell" id="cell-41"></div>
-        <div class="cell yellowLudoBox" id="cell-yellow-home-2"></div>
-        <div class="cell" id="cell-35"></div>
-        <div class="cell yellowLudoBox" id="cell-40"></div>
-        <div class="cell yellowLudoBox" id="cell-ellow-home-"></div>
-        <div class="cell" id="cell-36"></div>
-        <div class="cell" id="cell-39"></div>
-        <div class="cell" id="cell-38"></div>
-        <div class="cell" id="cell-37"></div>
+        <!-- Blue path continued -->
+        <div class="cell" id="b6"></div>
+        <div class="cell" id="b7"></div>
+        <div class="cell" id="b8"></div>
+        <div class="cell" id="b9"></div>
+        <div class="cell" id="b10"></div>
+        <div class="cell" id="b11"></div>
 
-        <!-- board houses -->
+        <!-- Red home path -->
+        <div class="cell" id="y12"></div>
+        <div class="cell redLudoBox" id="rh1"></div>
+        <div class="cell redLudoBox" id="rh2"></div>
+        <div class="cell redLudoBox" id="rh3"></div>
+        <div class="cell redLudoBox" id="rh4"></div>
+        <div class="cell redLudoBox" id="rh5"></div>
+
+        <!-- Green home path -->
+        <div class="cell greenLudoBox" id="gh5"></div>
+        <div class="cell greenLudoBox" id="gh4"></div>
+        <div class="cell greenLudoBox" id="gh3"></div>
+        <div class="cell greenLudoBox" id="gh2"></div>
+        <div class="cell greenLudoBox" id="gh1"></div>
+
+        <!-- More cells -->
+        <div class="cell" id="b12"></div>
+        <div class="cell" id="y11"></div>
+        <div class="cell" id="y10"></div>
+        <div class="cell" id="y9"></div>
+        <div class="cell" id="y8"></div>
+        <div class="cell" id="y7"></div>
+        <div class="cell" id="y6"></div>
+
+        <!-- Green path -->
+        <div class="cell" id="g5"></div>
+        <div class="cell" id="g4"></div>
+        <div class="cell" id="g3"></div>
+        <div class="cell" id="g2"></div>
+        <div class="cell greenLudoBox" id="g1"></div>
+        <div class="cell" id="b13"></div>
+
+        <!-- Yellow home path -->
+        <div class="cell" id="y5"></div>
+        <div class="cell yellowLudoBox" id="yh5"></div>
+        <div class="cell" id="g6"></div>
+        <div class="cell" id="y4"></div>
+        <div class="cell yellowLudoBox" id="yh4"></div>
+        <div class="cell" id="g7"></div>
+        <div class="cell" id="y3"></div>
+        <div class="cell yellowLudoBox" id="yh3"></div>
+        <div class="cell" id="g8"></div>
+        <div class="cell" id="y2"></div>
+        <div class="cell yellowLudoBox" id="yh2"></div>
+        <div class="cell" id="g9"></div>
+        <div class="cell yellowLudoBox" id="y1"></div>
+        <div class="cell yellowLudoBox" id="yh1"></div>
+        <div class="cell" id="g10"></div>
+        <div class="cell" id="g13"></div>
+        <div class="cell" id="g12"></div>
+        <div class="cell" id="g11"></div>
+
+        <!-- Player houses -->
         <div class="red-house" id="red-house"></div>
         <div class="blue-house" id="blue-house"></div>
-        <div class="house-center"></div>
-        <div class="yellow-house" id="yellow-house"></div>
         <div class="green-house" id="green-house"></div>
+        <div class="yellow-house" id="yellow-house"></div>
+        <div class="house-center"></div>
       </div>
     </section>
     <!-- roll dice -->
     <button id="roll-btn">Roll Dice</button>
     <p id="dice-result">Roll: -</p>
     <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" />
-    <p></p>
+    <p>Thank</p>
 
     <script src="/js/games/ludo-force.js"></script>
   </body>
