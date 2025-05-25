@@ -134,7 +134,14 @@ window.addEventListener("DOMContentLoaded", () => {
     enterHomePath(stepsIntoHome) {}
 
     // function to return the piece to the locked position when killed
-    sentMeToBoard() {}
+    sentMeToBoard() {
+      this.score = 0;
+      this.position = this.initailPosition;
+      this.status = 0;
+      let element = document.querySelector(`[piece_id="${this.id}"]`);
+      let toAppendDiv = document.getElementById(this.initailPosition)
+      toAppendDiv.appendChild(element)
+    }
   }
 
   const boardDetails = [
@@ -194,10 +201,12 @@ window.addEventListener("DOMContentLoaded", () => {
       // icon.setAttribute("piece_id", `${boardColor}-${i}`);
       // span.classList.add("token", `${boardColor}-piece`);
       icon.addEventListener("click", (e) => {
-        console.log("Clicked element:", e.target);
-        console.log("piece_id:", e.target.getAttribute("piece_id"));
         turnForUser(e);
       });
+
+      if (boardColor === 'red') {
+        icon.setAttribute('myPieceNum', i+1)
+      }
 
       // const player = new Token(
       //   pieceID,
@@ -403,6 +412,43 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     //logic for kill detection
+    let opponentPieces = playerPieces.filter(
+      (obj) => obj.team !== currentTeamTurn && obj.status === 1
+    );
+    let bonusReached = false;
+
+    for (let i = 0; i < totalUnlockedPieces.length; i++) {
+      if (bonusReached) {
+        break;
+      }
+
+      let array = giveArrayForMovingPath(totalUnlockedPieces[i]);
+      let cut = opponentPieces.find(
+        (obj) =>
+          obj.position === array[array.length - 1] &&
+          !safePaths.includes(obj.position)
+      );
+      let homeBonusReached = array[array.length - 1] === "home";
+      if (cut) {
+        totalUnlockedPieces[i].movePiece(array);
+        await delay(array.length * 175);
+        cut.sentMeToBoard();
+        bonusReached = true;
+        rollMyDice(true);
+        return;
+      }
+      if (homeBonusReached) {
+        totalUnlockedPieces[i].movePiece(array);
+        await delay(array.length * 175);
+        bonusReached = true;
+        rollMyDice(true);
+      }
+    }
+
+    if (bonusReached) {
+      return;
+    }
+
     let lockedPieces = playerPieces.filter(
       (obj) => obj.team === currentTeamTurn && obj.status === 0
     );
@@ -570,10 +616,10 @@ window.addEventListener("DOMContentLoaded", () => {
             if (!(await attemptMove(piecesNotAtHomePath[0]))) return;
           } else {
             for (let i = 0; i < piecesAtHomePath; i++) {
-              let movingPathArray = giveArrayForMovingPath(piecesAtHomePath[i])
+              let movingPathArray = giveArrayForMovingPath(piecesAtHomePath[i]);
               if (movingPathArray.length === diceResult) {
-                isMoving = true
-                moveMyPiece(piecesAtHomePath[i])
+                isMoving = true;
+                moveMyPiece(piecesAtHomePath[i]);
                 break;
               }
             }
@@ -582,7 +628,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (!isMoving) {
-      nextTeamTurn()
+      nextTeamTurn();
     }
   };
 
@@ -604,6 +650,24 @@ window.addEventListener("DOMContentLoaded", () => {
           obj.id === e.target.getAttribute("piece_id") &&
           obj.team === currentTeamTurn
       );
+      let opponentPieces = playerPieces.filter(
+        (obj) => obj.team !== currentTeamTurn && obj.status === 1
+      );
+      let array = giveArrayForMovingPath(piece);
+
+      let cut = opponentPieces.find(
+        (obj) =>
+          obj.position === array[array.length - 1] &&
+          !safePaths.includes(obj.position)
+      );
+      if (cut) {
+        piece.movePiece(array);
+        await delay(array.length * 175);
+        cut.sentMeToBoard();
+        currentPlayerTurnStatus = true;
+        return;
+      }
+
       if (!piece) {
         console.warn("Token not found for event target:", e.target);
         return;
@@ -723,3 +787,31 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 600);
   };
 });
+
+document.addEventListener('keydown', (e) => {
+  let currentTeamTurn = playerTurns[currentPlayerTurnIndex]
+
+  if (currentTeamTurn !== 'red') {
+    return
+  }
+
+  if (e.key === 1) {
+    let piece = document.querySelector(`[myPieceNum="1"]`)
+    piece?.click()
+  }
+  if (e.key === 2) {
+    let piece = document.querySelector(`[myPieceNum="2"]`)
+    piece?.click()
+  }
+  if (e.key === 3) {
+    let piece = document.querySelector(`[myPieceNum="3"]`)
+    piece?.click()
+  }
+  if (e.key === 4) {
+    let piece = document.querySelector(`[myPieceNum="4"]`)
+    piece?.click()
+  }
+  if (e.key === 'Space') {
+   rollDiceBtn.click()
+  }
+})
