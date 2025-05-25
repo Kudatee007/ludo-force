@@ -185,6 +185,9 @@ window.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < 4; i++) {
       const span = document.createElement("span");
       const icon = document.createElement("i");
+      // icon.src ="/images/icon.svg"
+      // icon.alt = `${boardColor} piece`
+      // icon.classList.add("piece", `${boardColor}-piece`)
       icon.classList.add(
         "fa-solid",
         "fa-location-pin",

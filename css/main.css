@@ -5,10 +5,14 @@
   font-family: "Lucida Grande";
 }
 :root {
-  --red: #4caf4f;
-  --blue: #2ea9f0;
-  --green: #4d4d4d;
-  --yellow: #717171;
+  --red: #CB3A2C;
+  --red-sec: #B22F24;
+  --blue: #2F5BBD;
+  --blue-sec: #11327D;
+  --green: #5BC072;
+  --green-sec: #3F8B4F;
+  --yellow: #D8B948;
+  --yellow-sec: #B98B31;
   --white: #ffffff;
 }
 .play-now-board {

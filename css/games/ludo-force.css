@@ -1,36 +1,36 @@
-.yellow {
+/* .yellow {
   color: yellow;
   background-color: yellow;
-}
-.red {
+} 
+ .red {
   color: red;
   background-color: red;
 }
 .green {
   color: green;
   background-color: green;
-}
+} 
 .blue {
   color: blue;
   background-color: blue;
-}
+} */
 .redLudoBox {
-  background-color: red;
+  background-color: var(--red);
 }
 .blueLudoBox {
-  background-color: blue;
+  background-color: var(--blue);
 }
 .yellowLudoBox {
-  background-color: yellow;
+  background-color: var(--yellow);
 }
 .greenLudoBox {
-  background-color: green;
+  background-color: var(--green);
 }
 .game-area {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   width: 100%;
   /* height: 100vh; */
 }
@@ -38,10 +38,14 @@
   display: grid;
   grid-template-columns: repeat(15, 35px);
   grid-template-rows: repeat(15, 35px);
-  width: 525px;
-  height: 525px;
-  border: 1px solid black;
+  /* width: 525px; */
+  width: fit-content;
+  height: auto;
+  /* border: 1px solid black; */
+  outline: 7px solid #967e2e;
+  border: 9px solid #e3964a;
   position: relative;
+  gap: 4px;
 }
 /* .cell {
   width: 35px;
@@ -49,11 +53,12 @@
   border: 1px solid black;
 } */
 .red-house {
-  border: 35px solid red;
-  background-color: rgb(192, 98, 98);
+  border: 12px solid var(--red-sec);
+  background-color: var(--red);
   display: grid;
   grid-column: 1 / span 6;
   grid-row: 1 / span 6;
+  place-items: center;
 }
 .house-center {
   /* width: 105px;
@@ -63,32 +68,40 @@
   grid-row: 7 / span 3;
 }
 .blue-house {
-  border: 35px solid blue;
-  background-color: rgb(68, 20, 20);
+  border: 12px solid var(--blue-sec);
+  background-color: var(--blue);
   display: grid;
   grid-column: 10 / span 6;
   grid-row: 1 / span 6;
+  place-items: center;
 }
 .yellow-house {
-  border: 35px solid yellow;
+  border: 12px solid var(--yellow-sec);
   display: grid;
-  background-color: rgb(208, 208, 114);
+  background-color: var(--yellow);
   grid-column: 1 / span 6;
   grid-row: 10 / span 6;
+  place-items: center;
 }
 .green-house {
-  border: 35px solid green;
+  /* outline: 20px solid black; */
+  border: 12px solid var(--green-sec);
   display: grid;
-  background-color: rgb(118, 220, 118);
+  background-color: var(--green);
   grid-column: 10 / span 6;
   grid-row: 10 / span 6;
+  place-items: center;
 }
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  justify-items: center;
-  align-items: center;
-  gap: 0px;
+  /* justify-items: center;
+  align-items: center; */
+  gap: 10px;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  transform: rotate(45deg);
 }
 .blue-house.active,
 .red-house.active,
@@ -128,22 +141,24 @@
     height: 35px;
     border: 0.1px solid black;
   } */
-.token {
+/* .token {
   width: 24px;
   height: 24px;
   border-radius: 50%;
   display: inline-block;
   transition: all 0.3s ease;
   box-shadow: 0 0 8px rgb(14, 13, 13);
-  /* background-color: rgba(255, 255, 255, 0.6); */
-}
+  background-color: rgba(255, 255, 255, 0.6);
+} */
 span {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  /* border-radius: 50%; */
   display: inline-block;
   transition: all 0.3s ease;
   box-shadow: 0 0 8px rgb(14, 13, 13);
+  border: 4px solid var(--white);
+  /* transform: rotate(45deg); */
   /* background-color: rgba(255, 255, 255, 0.6); */
 }
 
@@ -154,7 +169,7 @@ span {
   justify-content: center;
   width: 35px; /* adjust size */
   height: 35px; /* adjust size */
-  border: 0.1px solid #ccc;
+  border: 0.1px solid #717070;
 }
 
 .selected {
@@ -164,13 +179,6 @@ span {
 .dice {
   width: 50px;
   height: 50px;
-}
-:root {
-  --red: #4caf4f;
-  --blue: #2ea9f0;
-  --green: #4d4d4d;
-  --yellow: #717171;
-  --white: #ffffff;
 }
 #red-house div span {
   background-color: red;
@@ -184,7 +192,20 @@ span {
 #green-house div span {
   background-color: green;
 }
-/* .red-piece {
-  background-color: red;
-  color: red;
-} */
+.red-piece {
+  /* background-color: rgb(9, 1, 1); */
+  color: vaar(--red);
+  transform: rotate(-45deg);
+}
+.yellow-bot {
+  display: flex;
+  gap: 5px;
+  background-color: var(--blue-sec);
+  width: fit-content;
+  padding: 10px;
+  border: 1px solid var(--white);
+  border-radius: 10px;
+}
+.bot-icon {
+  width: 50px;
+}
