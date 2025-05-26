@@ -189,8 +189,9 @@ window.addEventListener("DOMContentLoaded", () => {
       // icon.alt = `${boardColor} piece`
       // icon.classList.add("piece", `${boardColor}-piece`)
       icon.classList.add(
+      "fa-duotone",
         "fa-solid",
-        "fa-location-pin",
+        "fa-location-dot",
         "piece",
         `${boardColor}-piece`
       );

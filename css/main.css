@@ -5,14 +5,14 @@
   font-family: "Lucida Grande";
 }
 :root {
-  --red: #CB3A2C;
-  --red-sec: #B22F24;
-  --blue: #2F5BBD;
-  --blue-sec: #11327D;
-  --green: #5BC072;
-  --green-sec: #3F8B4F;
-  --yellow: #D8B948;
-  --yellow-sec: #B98B31;
+  --red: #cb3a2c;
+  --red-sec: #b22f24;
+  --blue: #2f5bbd;
+  --blue-sec: #11327d;
+  --green: #5bc072;
+  --green-sec: #3f8b4f;
+  --yellow: #d8b948;
+  --yellow-sec: #b98b31;
   --white: #ffffff;
 }
 .play-now-board {
@@ -21,7 +21,7 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url('/images/ludoforce-bg.svg');
+  background-image: url("/images/ludoforce-bg.svg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -62,24 +62,63 @@
   justify-content: center;
   flex-direction: column;
 }
+.loading {
+  /* position: absolute;
+  top: 50%;
+  left: 50%; */
+  /* transform: translate(-50%, -50%); */
+  display: none;
+}
+.progress-bar {
+  width: 256px;
+  height: 12px;
+  background: #fff;
+  border-radius: 13px;
+  padding: 3px;
+  box-sizing: border-box;
+  border: none;
+}
+.progress {
+  width: 0px;
+  height: 7px;
+  background: var(--blue);
+  border-radius: 13px;
+}
+.text {
+  color: var(--white);
+  font-size: 13px;
+  display: none;
+  text-align: center;
+  padding-top: 5px;
+}
 @media (min-width: 640px) {
   .ludo-force-img {
     width: 300px;
     height: 300px;
   }
   .play-now-btn {
-    width: 305px;
-    height: 70px;
- font-size: 30px;
+    width: 300px;
+    height: 60px;
+    font-size: 23px;
+    display: block;
   }
   .ludo-force-header {
     font-size: 50px;
   }
   .play-now-icon {
-    width: 39px;
-    height: 39px;
+    width: 30px;
   }
-  .play-now-board{
+  .play-now-board {
     padding-bottom: 10px;
+  }
+  .progress-bar {
+    width: 406px;
+    height: 15px;
+  }
+  .progress {
+    height: 9px;
+  } 
+  .text {
+    font-size: 15px;
   }
 }
