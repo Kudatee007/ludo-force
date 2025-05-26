@@ -153,7 +153,7 @@ window.addEventListener("DOMContentLoaded", () => {
       homePathEntry: "r13",
       gameEntry: "r1",
     },
-      {
+    {
       boardColor: "green",
       board: green_house,
       homePathEntry: "g13",
@@ -166,7 +166,6 @@ window.addEventListener("DOMContentLoaded", () => {
       gameEntry: "b1",
     },
 
-  
     {
       boardColor: "yellow",
       board: yellow_house,
@@ -176,19 +175,38 @@ window.addEventListener("DOMContentLoaded", () => {
   ];
 
   const numberOfPlayers = parseInt(localStorage.getItem("numberOfPlayers"));
+  const playerColor = localStorage.getItem("playerColor");
+
+  let colorsToUse = [];
+
+  if (numberOfPlayers === 2) {
+    if (playerColor === "red" || playerColor === "green") {
+      colorsToUse = ["red", "green"];
+    } else if (playerColor === "blue" || playerColor === "yellow") {
+      colorsToUse = ["yellow", "blue"];
+    }
+  } else {
+    colorsToUse = ["red", "green", "blue", "yellow"];
+  }
+  playerTurns = [...colorsToUse];
 
   // let numberOfPlayers = 0;
   let playerPieces = [];
 
-
-
-  for (let i = 0; i < numberOfPlayers; i++) {
-    let boardColor = boardDetails[i].boardColor;
-    let homePathEntry = boardDetails[i].homePathEntry;
-    let gameEntry = boardDetails[i].gameEntry;
+  colorsToUse.forEach((color) => {
+    const boardObj = boardDetails.find((b) => b.boardColor === color);
+    const boardColor = boardObj.boardColor;
+    const homePathEntry = boardObj.homePathEntry;
+    const gameEntry = boardObj.gameEntry;
 
     const parentDiv = document.createElement("div");
     parentDiv.classList.add("board");
+
+    // for (let i = 0; i < numberOfPlayers; i++) {
+    // let boardColor = boardDetails[i].boardColor;
+    // let homePathEntry = boardDetails[i].homePathEntry;
+    // let gameEntry = boardDetails[i].gameEntry;
+
     for (let i = 0; i < 4; i++) {
       const span = document.createElement("span");
       const icon = document.createElement("i");
@@ -219,14 +237,6 @@ window.addEventListener("DOMContentLoaded", () => {
         icon.setAttribute("myPieceNum", i + 1);
       }
 
-      // const player = new Token(
-      //   pieceID,
-      //   boardColor,
-      //   0,
-      //   0,
-      //   homePathEntry,
-      //   gameEntry // <- This is extra
-      // );
       const player = new Token(
         boardColor,
         position,
@@ -241,15 +251,30 @@ window.addEventListener("DOMContentLoaded", () => {
       // console.log(span);
     }
 
-    boardDetails[i].board.append(parentDiv);
-  }
+    boardObj.board.append(parentDiv);
+    // }
+  });
+  // if (
+  //   (numberOfPlayers == 2 && playerColor == "red") ||
+  //   (numberOfPlayers == 2 && playerColor == "green")
+  // ) {
+  //   playerTurns = ["red", "green"];
+  // } else if (
+  //   (numberOfPlayers == 2 && playerColor == "blue") ||
+  //   (numberOfPlayers == 2 && playerColor == "yellow")
+  // ) {
+  //   playerTurns = ["yellow", "blue"];
+  // } else {
+  //   playerTurns = ["red", "blue", "green", "yellow"];
+  // }
 
-  if (numberOfPlayers == 2) {
-    playerTurns = ["red", "green"];
-  } else if (numberOfPlayers == 3) {
-    playerTurns = ["red", "blue", "green"];
-  } else if (numberOfPlayers == 4)
-    playerTurns = ["red", "blue", "green", "yellow"];
+  currentPlayerTurnIndex = playerTurns.indexOf(playerColor);
+  console.log(currentPlayerTurnIndex);
+
+  if (currentPlayerTurnIndex === -1) {
+    // If playerColor is not found, default to 0
+    currentPlayerTurnIndex = 0;
+  }
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -266,7 +291,7 @@ window.addEventListener("DOMContentLoaded", () => {
     boardDetailObject[0].board.classList.toggle("active");
   };
 
-  setPlayerTurn(0);
+  setPlayerTurn(currentPlayerTurnIndex);
 
   const nextTeamTurn = async () => {
     prevPlayerTurnIndex = currentPlayerTurnIndex;
@@ -684,31 +709,6 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // let array = giveArrayForMovingPath(piece);
-
-      // if (array.length < diceResult) {
-      //   return;
-      // }
-
-      // if (diceResult === 6) {
-      //   currentPlayerTurnStatus = true;
-      //   if (piece.status === 0) {
-      //     piece.unlockPiece();
-      //     return;
-      //   }
-      //   piece.movePiece(array);
-      // } else {
-      //   // if (piece.status === 0) {
-      //   //   return;
-      //   // }
-      //   if (diceResult !== 6 && piece.status === 0) return;
-      //   currentPlayerTurnStatus = true;
-      //   piece.movePiece(array);
-      //   if (!teamHasBonus) {
-      //     nextTeamTurn();
-      //   }
-      // }
-
       if (diceResult === 6 && piece.status === 0) {
         piece.unlockPiece();
         return;
@@ -728,15 +728,6 @@ window.addEventListener("DOMContentLoaded", () => {
           nextTeamTurn();
         }
       }
-
-      console.log(
-        "User clicked token",
-        piece.id,
-        "with status",
-        piece.status,
-        "diceResult:",
-        diceResult
-      );
     } catch (err) {
       console.error("Error in turnForUser:", err);
     }

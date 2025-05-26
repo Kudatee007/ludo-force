@@ -6,6 +6,22 @@
   background-repeat: no-repeat;
   position: relative;
 }
+/* New blur overlay */
+.blur-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.1); /* Optional dark tint */
+  z-index: 10;
+  display: none;
+}
+.blur-overlay.show {
+  display: block;
+}
+
 .game-vs {
   display: flex;
   flex-direction: column;
@@ -24,46 +40,116 @@
   width: 200px;
 }
 .select-players {
-    width: 300px;
-    border: 5px solid var(--blue-sec);
-    border-radius: 5px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--white);
-    /* display: flex; */
-    flex-direction: column;
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    opacity: 0;
-    visibility: hidden;
-    display: flex;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  opacity: 0;
+  visibility: hidden;
+  display: flex;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  z-index: 20;
+}
+.select-player {
+  width: 300px;
+  border: 5px solid var(--blue-sec);
+  border-radius: 10px;
+  background-color: var(--white);
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+.select-colors {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  opacity: 0;
+  visibility: hidden;
+  display: flex;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  z-index: 20;
+}
+.select-color {
+  width: 300px;
+  border: 5px solid var(--blue-sec);
+  border-radius: 10px;
+  background-color: var(--white);
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
 }
 .select-players.show {
+  opacity: 1;
+  visibility: visible;
+}
+.select-colors.show {
     opacity: 1;
     visibility: visible;
-}
+  }
 .select-player-txt {
-    width: 200px;
+  width: 200px;
 }
 .cancel-setup {
-    position: absolute;
-    top: -7px;
-    right: -7px;
-    width: 20px;
-    z-index: 1000;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 20px;
+  z-index: 1000;
 }
 .players {
-    font-size: 20px;
-    font-weight: 600;
-    color: #000000;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
 }
 .player-box {
-    display: flex;
-    gap: 15px;
-    align-items: center;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+.select-player-color {
+  width: 250px;
+}
+.select-color-box img {
+  width: 50px;
+}
+.select-color-box {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.color-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.next-btn {
+  border: 8px solid var(--blue-sec);
+  border-radius: 30px;
+  padding: 8px;
+  width: 130px;
+}
+.next-btn img {
+  width: 50px;
 }
