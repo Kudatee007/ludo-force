@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/games/game-setup.css" />
+  <body>
+    <div class="game-setup">
+      <!-- vs-computer -->
+      <div class="game-vs">
+        <img src="/images/ludoTxtSetup.svg" alt="" class="ludo-txt-setup" />
+        <img src="/images/ludoDiceSetup.svg" alt="" class="ludo-dice-setup" />
+        <img src="/images/vsComputer.svg" alt="" class="vs-computer" />
+      </div>
+      <!-- select players -->
+      <div class="select-players">
+        <img src="/images/cancel.svg" alt="" class="cancel-setup">
+        <img src="/images/select-players.svg" alt="" class="select-player-txt"/>
+        <div class="player-box">
+            <input type="checkbox" name="" id="twoPlayers">
+            <label for="twoPlayers" class="players">2 PLAYERS</label>
+        </div>
+        <div class="player-box">
+            <input type="checkbox" name="" id="fourPlayers" >
+            <label for="fourPlayers" class="players">4 PLAYERS</label>
+        </div>
+        <button onclick="handlePlayerCountSelection()">Start Game</button>
+      </div>
+    </div>
+    <script src="/js/utils.js"></script>
+    <script src="/js/games/ludo-force.js"></script>
+  </body>
+</html>

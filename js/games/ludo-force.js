@@ -7,6 +7,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const red_house = document.getElementById("red-house");
   const rollDiceBtn = document.getElementById("roll-btn");
   const rollDice = document.getElementById("diceImg");
+  const twoPlayers = document.getElementById("twoPlayers");
+  const fourPlayers = document.getElementById("fourPlayers");
 
   if (!red_house) {
     console.warn("Missing #red-house element");
@@ -139,8 +141,8 @@ window.addEventListener("DOMContentLoaded", () => {
       this.position = this.initailPosition;
       this.status = 0;
       let element = document.querySelector(`[piece_id="${this.id}"]`);
-      let toAppendDiv = document.getElementById(this.initailPosition)
-      toAppendDiv.appendChild(element)
+      let toAppendDiv = document.getElementById(this.initailPosition);
+      toAppendDiv.appendChild(element);
     }
   }
 
@@ -151,6 +153,12 @@ window.addEventListener("DOMContentLoaded", () => {
       homePathEntry: "r13",
       gameEntry: "r1",
     },
+      {
+      boardColor: "green",
+      board: green_house,
+      homePathEntry: "g13",
+      gameEntry: "g1",
+    },
     {
       boardColor: "blue",
       board: blue_house,
@@ -158,12 +166,7 @@ window.addEventListener("DOMContentLoaded", () => {
       gameEntry: "b1",
     },
 
-    {
-      boardColor: "green",
-      board: green_house,
-      homePathEntry: "g13",
-      gameEntry: "g1",
-    },
+  
     {
       boardColor: "yellow",
       board: yellow_house,
@@ -172,8 +175,12 @@ window.addEventListener("DOMContentLoaded", () => {
     },
   ];
 
-  let numberOfPlayers = 4;
+  const numberOfPlayers = parseInt(localStorage.getItem("numberOfPlayers"));
+
+  // let numberOfPlayers = 0;
   let playerPieces = [];
+
+
 
   for (let i = 0; i < numberOfPlayers; i++) {
     let boardColor = boardDetails[i].boardColor;
@@ -189,7 +196,7 @@ window.addEventListener("DOMContentLoaded", () => {
       // icon.alt = `${boardColor} piece`
       // icon.classList.add("piece", `${boardColor}-piece`)
       icon.classList.add(
-      "fa-duotone",
+        "fa-duotone",
         "fa-solid",
         "fa-location-dot",
         "piece",
@@ -208,8 +215,8 @@ window.addEventListener("DOMContentLoaded", () => {
         turnForUser(e);
       });
 
-      if (boardColor === 'red') {
-        icon.setAttribute('myPieceNum', i+1)
+      if (boardColor === "red") {
+        icon.setAttribute("myPieceNum", i + 1);
       }
 
       // const player = new Token(
@@ -792,30 +799,30 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 });
 
-document.addEventListener('keydown', (e) => {
-  let currentTeamTurn = playerTurns[currentPlayerTurnIndex]
+document.addEventListener("keydown", (e) => {
+  let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
 
-  if (currentTeamTurn !== 'red') {
-    return
+  if (currentTeamTurn !== "red") {
+    return;
   }
 
   if (e.key === 1) {
-    let piece = document.querySelector(`[myPieceNum="1"]`)
-    piece?.click()
+    let piece = document.querySelector(`[myPieceNum="1"]`);
+    piece?.click();
   }
   if (e.key === 2) {
-    let piece = document.querySelector(`[myPieceNum="2"]`)
-    piece?.click()
+    let piece = document.querySelector(`[myPieceNum="2"]`);
+    piece?.click();
   }
   if (e.key === 3) {
-    let piece = document.querySelector(`[myPieceNum="3"]`)
-    piece?.click()
+    let piece = document.querySelector(`[myPieceNum="3"]`);
+    piece?.click();
   }
   if (e.key === 4) {
-    let piece = document.querySelector(`[myPieceNum="4"]`)
-    piece?.click()
+    let piece = document.querySelector(`[myPieceNum="4"]`);
+    piece?.click();
   }
-  if (e.key === 'Space') {
-   rollDiceBtn.click()
+  if (e.key === "Space") {
+    rollDiceBtn.click();
   }
-})
+});

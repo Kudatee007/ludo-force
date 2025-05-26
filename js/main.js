@@ -25,4 +25,7 @@ playBtn.addEventListener("click", () => {
   loader.style.display = "block";
   playBtn.style.display = "none";
   loading = setInterval(animate, 50);
+  setTimeout(() => {
+    window.location.href = "game-setup.html";
+  }, 5000);
 });
