@@ -1,20 +1,46 @@
 const vsComputer = document.querySelector(".vs-computer");
 const selectPlayers = document.querySelector(".select-players");
 const selectColors = document.querySelector(".select-colors");
-const cancel = document.querySelector(".cancel-setup");
+const cancel = document.querySelectorAll(".cancel-setup");
 const blurOverlay = document.querySelector(".blur-overlay");
+const players = document.querySelectorAll(".players");
+const selColor = document.querySelectorAll(".color-box");
+
+const click = new Audio(
+  "../assets/sound/mixkit-revolver-chamber-spin-1674.wav"
+);
+const lightClick = new Audio(
+  "../assets/sound/mixkit-lighter-wheel-spin-2641.wav"
+);
 
 vsComputer.addEventListener("click", () => {
   selectPlayers.classList.add("show");
   blurOverlay.classList.add("show");
+  click.play();
 });
 
-cancel.addEventListener("click", () => {
-  selectPlayers.classList.remove("show");
-  blurOverlay.classList.remove("show");
+players.forEach((player) => {
+  player.addEventListener("click", () => {
+    lightClick.play();
+  });
+});
+
+selColor.forEach((color) => {
+  color.addEventListener("click", () => {
+    lightClick.play();
+  });
+});
+
+cancel.forEach((can) => {
+  can.addEventListener("click", () => {
+    lightClick.play();
+    selectPlayers.classList.remove("show");
+    blurOverlay.classList.remove("show");
+  });
 });
 
 function handlePlayerCountSelection() {
+  click.play();
   const isTwoPlayers = document.getElementById("twoPlayers").checked;
   const isFourPlayers = document.getElementById("fourPlayers").checked;
 
@@ -34,10 +60,10 @@ function handlePlayerCountSelection() {
 
   selectPlayers.classList.remove("show");
   selectColors.classList.add("show");
-
 }
 
 function handlePlayerColor() {
+  click.play();
   const redColor = document.getElementById("red-color").checked;
   const greenColor = document.getElementById("green-color").checked;
   const blueColor = document.getElementById("blue-color").checked;
@@ -59,6 +85,6 @@ function handlePlayerColor() {
   }
 
   localStorage.setItem("playerColor", playerColor);
-    // Redirect to game
-    window.location.href = "/play.html";
+  // Redirect to game
+  window.location.href = "/play.html";
 }

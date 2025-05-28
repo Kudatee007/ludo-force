@@ -1,6 +1,6 @@
 .game-setup {
   height: 100vh;
-  background-image: url("/images/ludoBg.svg");
+  background-image: url("../../assets/images/ludoBg.svg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -14,7 +14,7 @@
   width: 100%;
   height: 100%;
   backdrop-filter: blur(3px);
-  background-color: rgba(0, 0, 0, 0.1); /* Optional dark tint */
+  background-color: rgba(0, 0, 0, 0.1);
   z-index: 10;
   display: none;
 }
@@ -104,9 +104,9 @@
   visibility: visible;
 }
 .select-colors.show {
-    opacity: 1;
-    visibility: visible;
-  }
+  opacity: 1;
+  visibility: visible;
+}
 .select-player-txt {
   width: 200px;
 }
@@ -152,4 +152,23 @@
 }
 .next-btn img {
   width: 50px;
+}
+@media (min-width: 640px) {
+  .ludo-txt-setup {
+    width: 300px;
+  }
+  .ludo-dice-setup {
+    width: 150px;
+  }
+  .vs-computer {
+    width: 300px;
+  }
+  .select-player {
+    width: 350px;
+    height: 200px;
+  }
+  .select-color {
+    width: 350px;
+    height: 200px;
+  }
 }

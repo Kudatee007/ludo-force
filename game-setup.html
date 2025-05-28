@@ -10,22 +10,34 @@
   <body>
     <div class="game-setup">
       <!-- vs-computer -->
-      <div class="game-vs">
-        <img src="/images/ludoTxtSetup.svg" alt="" class="ludo-txt-setup" />
-        <img src="/images/ludoDiceSetup.svg" alt="" class="ludo-dice-setup" />
-        <img src="/images/vsComputer.svg" alt="" class="vs-computer" />
-      </div>
+      <section class="game-vs">
+        <img
+          src="./assets/images/ludoTxtSetup.svg"
+          alt="ludo-force"
+          class="ludo-txt-setup"
+        />
+        <img
+          src="./assets/images/ludoDiceSetup.svg"
+          alt="dice"
+          class="ludo-dice-setup"
+        />
+        <img
+          src="./assets/images/vsComputer.svg"
+          alt="vs-computer"
+          class="vs-computer"
+        />
+      </section>
 
       <!-- blur overlay (initially hidden) -->
       <div class="blur-overlay"></div>
 
-      <!-- select players -->
-      <div class="select-players">
+      <!-- select players number - 2/4 -->
+      <section class="select-players">
         <div class="select-player">
-          <img src="/images/cancel.svg" alt="" class="cancel-setup" />
+          <img src="./assets/images/cancel.svg" alt="" class="cancel-setup" />
           <img
-            src="/images/select-players.svg"
-            alt=""
+            src="./assets/images/select-players.svg"
+            alt="players"
             class="select-player-txt"
           />
           <div class="player-box">
@@ -38,51 +50,55 @@
           </div>
         </div>
         <button onclick="handlePlayerCountSelection()" class="next-btn">
-          <img src="/images/next.svg" alt="" />
+          <img src="./assets/images/next.svg" alt="next" />
         </button>
-      </div>
+      </section>
+
       <!-- select your color -->
-      <div class="select-colors">
+      <section class="select-colors">
         <div class="select-color">
-          <img src="/images/cancel.svg" alt="" class="cancel-setup" />
           <img
-            src="/images/selectColor.svg"
+            src="./assets/images/cancel.svg"
+            alt="cancel"
+            class="cancel-setup"
+          />
+          <img
+            src="./assets/images/selectColor.svg"
             alt=""
             class="select-player-color"
           />
           <div class="select-color-box">
             <div class="color-box">
               <label for="red-color">
-                <img src="/images/red-color.svg" alt="" />
+                <img src="./assets/images/red-color.svg" alt="red" />
               </label>
               <input type="checkbox" name="" id="red-color" />
             </div>
             <div class="color-box">
               <label for="green-color">
-                <img src="/images/green-color.svg" alt="" />
+                <img src="./assets/images/green-color.svg" alt="green" />
               </label>
               <input type="checkbox" name="" id="green-color" />
             </div>
             <div class="color-box">
               <label for="blue-color">
-                <img src="/images/blue-color.svg" alt="" />
+                <img src="./assets/images/blue-color.svg" alt="blue" />
               </label>
               <input type="checkbox" name="" id="blue-color" />
             </div>
             <div class="color-box">
               <label for="yellow-color">
-                <img src="/images/yellow-color.svg" alt="" />
+                <img src="./assets/images/yellow-color.svg" alt="yellow" />
               </label>
               <input type="checkbox" name="" id="yellow-color" />
             </div>
           </div>
         </div>
         <button onclick="handlePlayerColor()" class="next-btn">
-            <img src="/images/next.svg" alt="" />
-          </button>
-      </div>
+          <img src="./assets/images/next.svg" alt="" />
+        </button>
+      </section>
     </div>
     <script src="/js/utils.js"></script>
-    <script src="/js/games/ludo-force.js"></script>
   </body>
 </html>

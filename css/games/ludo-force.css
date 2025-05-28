@@ -1,19 +1,3 @@
-/* .yellow {
-  color: yellow;
-  background-color: yellow;
-} 
- .red {
-  color: red;
-  background-color: red;
-}
-.green {
-  color: green;
-  background-color: green;
-} 
-.blue {
-  color: blue;
-  background-color: blue;
-} */
 .redLudoBox {
   background-color: var(--red);
 }
@@ -30,9 +14,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* border: 1px solid black; */
   width: 100%;
-  /* height: 100vh; */
   position: absolute;
   top: 50%;
   left: 50%;
@@ -40,23 +22,17 @@
 }
 .game-board {
   display: grid;
-  grid-template-columns: repeat(15, 35px);
-  grid-template-rows: repeat(15, 35px);
-  /* width: 525px; */
-  width: fit-content;
+  grid-template-columns: repeat(15, 30px);
+  grid-template-rows: repeat(15, 30px);
+  width: 100%;
+  max-width: fit-content;
   height: auto;
-  /* border: 1px solid black; */
   outline: 7px solid #967e2e;
   border: 9px solid #e3964a;
   position: relative;
-  gap: 4px;
+  gap: 3px;
   background-color: var(--white);
 }
-/* .cell {
-  width: 35px;
-  height: 35px;
-  border: 1px solid black;
-} */
 .red-house {
   border: 12px solid var(--red-sec);
   background-color: var(--red);
@@ -64,10 +40,9 @@
   grid-column: 1 / span 6;
   grid-row: 1 / span 6;
   place-items: center;
+  width: 100%;
 }
 .house-center {
-  /* width: 105px;
-  height: 105px; */
   background-color: white;
   grid-column: 7 / span 3;
   grid-row: 7 / span 3;
@@ -75,6 +50,24 @@
   justify-content: start;
   flex-direction: column;
   align-items: center;
+  position: relative;
+}
+.ludoTxt {
+  width: 80px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+.dice {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 .blue-house {
   border: 12px solid var(--blue-sec);
@@ -83,6 +76,7 @@
   grid-column: 10 / span 6;
   grid-row: 1 / span 6;
   place-items: center;
+  width: 100%;
 }
 .yellow-house {
   border: 12px solid var(--yellow-sec);
@@ -91,25 +85,47 @@
   grid-column: 1 / span 6;
   grid-row: 10 / span 6;
   place-items: center;
+  width: 100%;
 }
 .green-house {
-  /* outline: 20px solid black; */
   border: 12px solid var(--green-sec);
   display: grid;
   background-color: var(--green);
   grid-column: 10 / span 6;
   grid-row: 10 / span 6;
   place-items: center;
+  width: 100%;
 }
 .board {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  /* justify-items: center;
-  align-items: center; */
+  align-content: center;
+  justify-content: center;
   gap: 10px;
-  width: 100px;
-  height: 100px;
+  width: 50px;
+  height: 50px;
   margin: 0 auto;
+  transform: rotate(45deg);
+}
+.board span {
+  width: 3.5vw;
+  height: 3.5vw;
+  display: inline-block;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgb(14, 13, 13);
+  border: 4px solid var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.piece {
+  position: absolute;
+  z-index: 1;
+  font-size: clamp(5px, 4vw, 20px);
+  transform: rotate(-45deg);
+  /* border: 2px solid white; */
+}
+.unlocked {
   transform: rotate(45deg);
 }
 .blue-house.active,
@@ -140,58 +156,25 @@
   grid-row: 2 / span 5;
 }
 .line-through2 {
-  /* border: 15px solid orange; */
   background-color: blue;
   grid-column: 9 / span 1;
   grid-row: 2;
 }
-/* .cell {
-    width: 35px;
-    height: 35px;
-    border: 0.1px solid black;
-  } */
-/* .token {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: inline-block;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 8px rgb(14, 13, 13);
-  background-color: rgba(255, 255, 255, 0.6);
-} */
-span {
-  width: 50px;
-  height: 50px;
-  /* border-radius: 50%; */
-  display: inline-block;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 8px rgb(14, 13, 13);
-  border: 4px solid var(--white);
-  /* transform: rotate(45deg); */
-  /* background-color: rgba(255, 255, 255, 0.6); */
-}
-
-/* Optional: center token in a cell */
 .cell {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 35px; /* adjust size */
-  height: 35px; /* adjust size */
+  width: 100%;
   border: 0.1px solid #717070;
-  /* background-color: var(--white); */
 }
 
 .selected {
   border: 2px solid gold;
   box-shadow: 0 0 8px gold;
 }
-.dice {
-  width: 50px;
-  height: 50px;
-}
 #red-house div span {
   background-color: var(--red-sec);
+  /* border: 2px solid white; */
 }
 #yellow-house div span {
   background-color: var(--yellow-sec);
@@ -204,71 +187,39 @@ span {
 }
 .red-piece {
   color: var(--red);
-  transform: rotate(-45deg);
-  width: 30px;
+  background-color: white;
 }
 .blue-piece {
   color: var(--blue);
-  transform: rotate(-45deg);
-  width: 30px;
+  background-color: white;
 }
 .green-piece {
   color: var(--green);
-  transform: rotate(-45deg);
-  width: 30px;
+  background-color: white;
 }
 .yellow-piece {
   color: var(--yellow);
-  transform: rotate(-45deg);
-  width: 30px;
+  background-color: white;
 }
 .red-bot {
-  display: flex;
-  gap: 5px;
-  background-color: var(--blue-sec);
-  width: fit-content;
-  padding: 10px;
-  border: 1px solid var(--white);
-  border-radius: 10px;
   position: absolute;
-  left: 250px;
-  top: 100px;
+  left: 400px;
+  top: 140px;
 }
 .blue-bot {
-  display: flex;
-  gap: 5px;
-  background-color: var(--blue-sec);
-  width: fit-content;
-  padding: 10px;
-  border: 1px solid var(--white);
-  border-radius: 10px;
   position: absolute;
-  right: 250px;
-  top: 100px;
+  right: 400px;
+  top: 140px;
 }
 .yellow-bot {
-  display: flex;
-  gap: 5px;
-  background-color: var(--blue-sec);
-  width: fit-content;
-  padding: 10px;
-  border: 1px solid var(--white);
-  border-radius: 10px;
   position: absolute;
-  left: 250px;
-  bottom: 100px;
+  left: 400px;
+  bottom: 140px;
 }
 .green-bot {
-  display: flex;
-  gap: 5px;
-  background-color: var(--blue-sec);
-  width: fit-content;
-  padding: 10px;
-  border: 1px solid var(--white);
-  border-radius: 10px;
   position: absolute;
-  right: 250px;
-  bottom: 100px;
+  right: 400px;
+  bottom: 140px;
 }
 .bot-icon {
   width: 50px;
@@ -277,7 +228,7 @@ span {
   background-color: yellow;
 }
 .ludoForceBoardGame {
-  background-image: url("/images/ludoBg.svg");
+  background-image: url("../../assets/images/ludoBg.svg");
   background-repeat: no-repeat;
   position: relative;
   width: 100%;
@@ -286,10 +237,22 @@ span {
 .top-bg {
   position: absolute;
   top: 0;
+  width: 100%;
 }
 .roll-dice {
   position: absolute;
-  bottom: 200px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.roll-dice button {
+  background-color: var(--blue-sec);
+  width: 100px;
+  padding: 10px;
+  border: 1px solid var(--white);
+  border-radius: 10px;
+  color: var(--white);
+  font-weight: 600;
 }
 .user-board {
   position: absolute;
@@ -307,9 +270,6 @@ span {
   font-weight: 600;
   font-size: 22px;
 }
-.ludoTxt {
-  width: 70px;
-}
 .text-blink {
   animation: blink 0.7s ease-in-out 0.1s;
 }
@@ -322,5 +282,75 @@ span {
   }
   100% {
     opacity: 1;
+  }
+}
+.user-name {
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--white);
+}
+#winner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#winner div {
+  width: 550px;
+  background-color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9999 !important;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 20px 10px;
+}
+#winner div button {
+  padding: 8px 8px;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--white);
+  text-transform: uppercase;
+  border: none;
+  background-color: #1a1a1a;
+}
+@media (max-width: 996px) {
+  .game-board {
+    grid-template-columns: repeat(15, 20px);
+    grid-template-rows: repeat(15, 20px);
+    gap: 3px;
+  }
+}
+@media (max-width: 480px) {
+  .game-board {
+    grid-template-columns: repeat(15, 15px);
+    grid-template-rows: repeat(15, 15px);
+  }
+  .board span {
+    width: 5vw;
+    height: 5vw;
+    border: 1.5px solid var(--white);
+  }
+  .red-piece {
+font-size: 15px;
+  }
+  .blue-piece {
+    font-size: 15px;
+  }
+  .green-piece {
+    font-size: 15px;
+  }
+  .yellow-piece {
+    font-size: 15px;
   }
 }

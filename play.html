@@ -17,31 +17,23 @@
   </head>
   <body>
     <div class="ludoForceBoardGame">
-      <img src="/images/top-cover.svg" alt="" class="top-bg" />
+      <img
+        src="./assets/images/top-cover.svg"
+        alt="blue-cover"
+        class="top-bg"
+      />
       <div class="user-board">
-        <img src="/images/user-icon.svg" alt="" />
+        <img src="./assets/images/user-icon.svg" alt="user" class="user" />
         <p>user401</p>
       </div>
       <!-- <h1>Ludo Force</h1> -->
       <!-- red bot dice -->
       <div class="red-bot">
-        <div>
-          <img src="/images/yellowBot.svg" alt="" class="bot-icon" />
-        </div>
-        <hr class="divider" />
-        <div>
-          <!-- <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" /> -->
-        </div>
+        <p class="user-name">You</p>
       </div>
       <!-- blue-bot dice -->
       <div class="blue-bot">
-        <div>
-          <img src="/images/yellowBot.svg" alt="" class="bot-icon" />
-        </div>
-        <hr class="divider" />
-        <div>
-          <!-- <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" /> -->
-        </div>
+        <p class="user-name">Bot</p>
       </div>
       <section class="game-area" id="game-area">
         <div id="game-board" class="game-board">
@@ -139,37 +131,33 @@
           <div class="green-house" id="green-house"></div>
           <div class="yellow-house" id="yellow-house"></div>
           <div class="house-center">
-            <img src="/images/ludoForceTxt.svg" alt="" class="ludoTxt">
-            <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" />
+            <img
+              src="./assets/images/ludoForceTxt.svg"
+              alt="ludo-force"
+              class="ludoTxt"
+            />
+            <img
+              src="./assets/images/dice_1.png"
+              alt="dice"
+              id="diceImg"
+              class="dice"
+            />
           </div>
         </div>
       </section>
+
+      <!-- red bot dice -->
+      <!-- <div class="yellow-bot">
+        <p class="user-name">Bot</p>
+      </div> -->
+      <!-- blue-bot dice -->
+      <!-- <div class="green-bot">
+        <p class="user-name">Bot</p>
+      </div> -->
       <!-- roll dice -->
       <div class="roll-dice">
         <button id="roll-btn">Roll Dice</button>
-        <p id="dice-result">Roll: -</p>
-        <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" />
-      </div>
-
-      <!-- red bot dice -->
-      <div class="yellow-bot">
-        <div>
-          <img src="/images/yellowBot.svg" alt="" class="bot-icon" />
-        </div>
-        <hr class="divider" />
-        <div>
-          <!-- <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" /> -->
-        </div>
-      </div>
-      <!-- blue-bot dice -->
-      <div class="green-bot">
-        <div>
-          <img src="/images/yellowBot.svg" alt="" class="bot-icon" />
-        </div>
-        <hr class="divider" />
-        <div>
-          <!-- <img src="/images/dice_1.png" alt="dice" id="diceImg" class="dice" /> -->
-        </div>
+        <!-- <p id="dice-result">Roll: -</p> -->
       </div>
     </div>
     <script src="/js/games/ludo-force.js"></script>
