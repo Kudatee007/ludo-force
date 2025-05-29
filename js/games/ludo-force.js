@@ -1,3 +1,16 @@
+const gameState = {
+  playerTurns: [],
+  currentPlayerTurnIndex: 0,
+  prevPlayerTurnIndex: null,
+  currentPlayerTurnStatus: true,
+  teamHasBonus: false,
+  allTokens: [],
+  isPaused: false,
+  diceResult: null,
+  winner: null,
+  isGameOver: false,
+};
+
 // importing all boards
 window.addEventListener("DOMContentLoaded", () => {
   console.log("DOM fully loaded");
@@ -15,19 +28,25 @@ window.addEventListener("DOMContentLoaded", () => {
   const unlock = new Audio(
     "../../assets/sound/mixkit-martial-arts-fast-punch-2047.wav"
   );
-  // console.log(red_house);
 
-  //Initial variables
-  let playerTurns = [];
-  let currentPlayerTurnIndex = 0;
-  let prevPlayerTurnIndex;
-  let currentPlayerTurnStatus = true;
-  let teamHasBonus = false;
-  let allTokens = [];
-  let isPaused = false;
+  const stateToSave = {
+    gameState,
+    allTokens: gameState.allTokens.map((token) => ({
+      team: token.team,
+      position: token.position,
+      score: token.score,
+      homePathEntry: token.homePathEntry,
+      id: token.id,
+      gameEntry: token.gameEntry,
+      status: token.status,
+      initailPosition: token.initailPosition,
+      stepsMoved: token.stepsMoved,
+    })),
+  };
 
-  let diceResult;
+  localStorage.setItem("ludoGameState", JSON.stringify(stateToSave));
 
+  // path array movement for token/piece
   const pathArray = [
     "r1",
     "r2",
@@ -83,6 +102,7 @@ window.addEventListener("DOMContentLoaded", () => {
     "y13",
   ];
 
+  // home-path token/piece
   let homePathEntries = {
     red: ["rh1", "rh2", "rh3", "rh4", "rh5", "home"],
     blue: ["bh1", "bh2", "bh3", "bh4", "bh5", "home"],
@@ -90,30 +110,46 @@ window.addEventListener("DOMContentLoaded", () => {
     yellow: ["yh1", "yh2", "yh3", "yh4", "yh5", "home"],
   };
 
-  let safePaths = [
-    ...homePathEntries.blue,
-    ...homePathEntries.yellow,
-    ...homePathEntries.green,
+  let homePathArray = [
     ...homePathEntries.red,
+    ...homePathEntries.blue,
+    ...homePathEntries.green,
+    ...homePathEntries.yellow,
   ];
 
-  let homePathArray = [
-    ...homePathEntries.blue,
-    ...homePathEntries.yellow,
-    ...homePathEntries.green,
+  // safe-path movement for token/piece
+  let safePaths = [
     ...homePathEntries.red,
+    ...homePathEntries.blue,
+    ...homePathEntries.green,
+    ...homePathEntries.yellow,
   ];
+
+  /**
+   * Class representing a Ludo game token (piece).
+   */
+
   class Token {
+    /**
+     * Create a token.
+     * @param {string} team - The team the token belongs to (e.g., "red", "blue").
+     * @param {string} position - The current position ID of the token.
+     * @param {number} score - The current score of the token.
+     * @param {string} homePathEntry - The entry point to the team's home path.
+     * @param {string} PlayerId - The unique ID assigned to this token (used in the DOM).
+     * @param {string} gameEntry - The main path entry point for the team.
+     */
     constructor(team, position, score, homePathEntry, PlayerId, gameEntry) {
+      // ... constructor logic
       this.team = team;
       this.position = position;
       this.score = score;
       this.homePathEntry = homePathEntry;
       this.id = PlayerId;
       this.gameEntry = gameEntry;
-      this.status = 0; // when true
+      this.status = 0;
 
-      this.initailPosition = position; // return piece to start position
+      this.initailPosition = position;
       this.stepsMoved = 0;
     }
 
@@ -141,15 +177,16 @@ window.addEventListener("DOMContentLoaded", () => {
         const currentIndex = homePathEntries[this.team].indexOf(this.position);
         const nextSteps = homePathEntries[this.team].slice(
           currentIndex + 1,
-          currentIndex + 1 + diceResult
+          currentIndex + 1 + gameState.diceResult
         );
 
         // Check if reaching the end (home)
         if (nextSteps.at(-1) === lastHomePos || nextSteps.at(-1) === "home") {
-          teamHasBonus = true;
+          gameState.teamHasBonus = true;
         }
 
         tokenToMove(this.id, nextSteps);
+        updateOverlapCounts();
         this.position = nextSteps.at(-1);
         this.score += nextSteps.length;
         return;
@@ -164,7 +201,7 @@ window.addEventListener("DOMContentLoaded", () => {
       if (willEnterHome) {
         let stepsToHomeEntry = mainPathLength - this.stepsMoved;
         let mainPathSegment = fullMovePath.slice(0, stepsToHomeEntry);
-        let remainingSteps = diceResult - mainPathSegment.length;
+        let remainingSteps = gameState.diceResult - mainPathSegment.length;
 
         //  Ensure the full 6-step home path can be entered
         let homePath = homePathEntries[this.team];
@@ -178,7 +215,7 @@ window.addEventListener("DOMContentLoaded", () => {
         finalPos === "home" ||
         finalPos === homePathEntries[this.team].at(-1)
       ) {
-        teamHasBonus = true;
+        gameState.teamHasBonus = true;
 
         // Hide the token or mark as complete
         const tokenEl = document.querySelector(`[piece_id="${this.id}"]`);
@@ -193,11 +230,12 @@ window.addEventListener("DOMContentLoaded", () => {
       this.stepsMoved += movedOnMain;
       this.position = finalPos;
       this.score += fullMovePath.length;
-      console.log("Checking win for team:", this.team);
-      console.log("All tokens:", allTokens);
     }
 
-    // function to return the piece to the locked position when killed
+    /**
+     * Sends the token back to its base when knocked out.
+     * Resets score and position.
+     */
     sentMeToBoard() {
       this.score = 0;
       this.position = this.initailPosition;
@@ -207,6 +245,38 @@ window.addEventListener("DOMContentLoaded", () => {
       toAppendDiv.appendChild(element);
     }
   }
+
+  const untilUnpaused = () =>
+    new Promise((resolve) => {
+      const check = () => {
+        if (!gameState.isPaused) return resolve();
+        setTimeout(check, 200); // recheck every 200ms
+      };
+      check();
+    });
+
+    const updateOverlapCounts =()=> {
+      // First clear all existing counts and text on pieces
+      document.querySelectorAll(".piece").forEach((icon) => {
+        icon.removeAttribute("data-overlap-count");
+        icon.textContent = "";
+      });
+  
+      const piecesOnCell = playerPieces.filter(
+        (piece) => piece.position === position
+      );
+      const count = piecesOnCell.length;
+      console.log(count);
+      
+      if (count > 1) {
+        icon.setAttribute("data-overlap-count", count);
+        icon.textContent = count; // Show the count on the icon
+      } else {
+        icon.removeAttribute("data-overlap-count");
+        icon.textContent = ""; // clear text if only 1 piece
+      }
+      
+    }
 
   const boardDetails = [
     {
@@ -241,6 +311,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   let colorsToUse = [];
 
+  // condition for player number selection
   if (numberOfPlayers === 2) {
     if (playerColor === "red" || playerColor === "green") {
       colorsToUse = ["red", "green"];
@@ -250,8 +321,7 @@ window.addEventListener("DOMContentLoaded", () => {
   } else {
     colorsToUse = ["red", "blue", "green", "yellow"];
   }
-  playerTurns = [...colorsToUse];
-
+  gameState.playerTurns = [...colorsToUse];
   let playerPieces = [];
 
   colorsToUse.forEach((color) => {
@@ -283,6 +353,7 @@ window.addEventListener("DOMContentLoaded", () => {
       icon.addEventListener("click", (e) => {
         turnForUser(e);
       });
+      
 
       if (boardColor === playerColor) {
         icon.setAttribute("myPieceNum", i + 1);
@@ -299,19 +370,17 @@ window.addEventListener("DOMContentLoaded", () => {
       playerPieces.push(player);
       span.append(icon);
       parentDiv.append(span);
-      allTokens.push(player);
+      // allTokens.push(player);
     }
 
     boardObj.board.append(parentDiv);
   });
 
+  gameState.currentPlayerTurnIndex = gameState.playerTurns.indexOf(playerColor);
 
-  currentPlayerTurnIndex = playerTurns.indexOf(playerColor);
-  console.log(currentPlayerTurnIndex);
-
-  if (currentPlayerTurnIndex === -1) {
+  if (gameState.currentPlayerTurnIndex === -1) {
     // If playerColor is not found, default to 0
-    currentPlayerTurnIndex = 0;
+    gameState.currentPlayerTurnIndex = 0;
   }
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -321,31 +390,33 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    let currentTeamTurn = playerTurns[playerTurnIndex];
-    // filtering the board details arrays and finding the currenTeam
+    let currentTeamTurn = gameState.playerTurns[playerTurnIndex];
+    // filtering the board details arrays and finding the currentTeam
     let boardDetailObject = boardDetails.filter(
       (obj) => obj.boardColor === currentTeamTurn
     );
     boardDetailObject[0].board.classList.toggle("active");
   };
 
-  setPlayerTurn(currentPlayerTurnIndex);
+  setPlayerTurn(gameState.currentPlayerTurnIndex);
 
   const nextTeamTurn = async () => {
-    prevPlayerTurnIndex = currentPlayerTurnIndex;
+    // await untilUnpaused();
+    gameState.prevPlayerTurnIndex = gameState.currentPlayerTurnIndex;
 
-    if (currentPlayerTurnIndex === playerTurns.length - 1) {
-      currentPlayerTurnIndex = 0;
+    if (gameState.currentPlayerTurnIndex === gameState.playerTurns.length - 1) {
+      gameState.currentPlayerTurnIndex = 0;
     } else {
-      currentPlayerTurnIndex += 1;
+      gameState.currentPlayerTurnIndex += 1;
     }
 
-    setPlayerTurn(prevPlayerTurnIndex);
-    setPlayerTurn(currentPlayerTurnIndex);
+    setPlayerTurn(gameState.prevPlayerTurnIndex);
+    setPlayerTurn(gameState.currentPlayerTurnIndex);
 
     await delay(500);
-    // const currentTeam = playerTurns[currentPlayerTurnIndex];
-    if (playerTurns[currentPlayerTurnIndex] !== playerColor) {
+    if (
+      gameState.playerTurns[gameState.currentPlayerTurnIndex] !== playerColor
+    ) {
       rollDiceForBot();
     }
   };
@@ -360,7 +431,7 @@ window.addEventListener("DOMContentLoaded", () => {
       );
       let homePathArrayForPiece = homePathEntries[piece.team];
 
-      for (let i = 0; i < diceResult; i++) {
+      for (let i = 0; i < gameState.diceResult; i++) {
         if (indexOfPath + 1 < homePathArrayForPiece.length) {
           indexOfPath += 1;
           movingArray.push(homePathArrayForPiece[indexOfPath]);
@@ -371,7 +442,7 @@ window.addEventListener("DOMContentLoaded", () => {
     } else {
       indexOfPath = pathArray.findIndex((elem) => elem === piece.position);
 
-      for (let i = 0; i < diceResult; i++) {
+      for (let i = 0; i < gameState.diceResult; i++) {
         indexOfPath = (indexOfPath + 1) % pathArray.length;
         movingArray.push(pathArray[indexOfPath]);
       }
@@ -381,7 +452,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const tokenToMove = (tokenId, array) => {
     const tokenToMove = document.querySelector(`[piece_id="${tokenId}"]`);
-    let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
+    let currentTeamTurn =
+      gameState.playerTurns[gameState.currentPlayerTurnIndex];
     let piece = playerPieces.find((obj) => obj.id === tokenId);
     let toBreak = false;
 
@@ -401,10 +473,12 @@ window.addEventListener("DOMContentLoaded", () => {
           (obj) => obj.team === currentTeamTurn
         );
         if (totalPiecesOfTeam.length === 0) {
+          gameState.winner = currentTeamTurn;
+          gameState.isGameOver = true;
           declareWinner(currentTeamTurn);
         }
         if (currentTeamTurn === playerColor) {
-          currentPlayerTurnStatus = true;
+          gameState.currentPlayerTurnStatus = true;
         } else {
           rollMyDice(true);
         }
@@ -425,21 +499,27 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   const rollMyDice = async (hasBonus) => {
-    currentPlayerTurnStatus = true;
+    await untilUnpaused();
+    // if (gameState.isPaused) return;
+    gameState.currentPlayerTurnStatus = true;
     await delay(700);
-    if (diceResult === 6 || hasBonus || teamHasBonus) {
+    if (gameState.diceResult === 6 || hasBonus || gameState.teamHasBonus) {
       rollDiceForBot();
     } else {
       nextTeamTurn();
-      if (playerTurns[currentPlayerTurnIndex] !== playerColor) rollDiceForBot();
+      if (
+        gameState.playerTurns[gameState.currentPlayerTurnIndex] !== playerColor
+      )
+        rollDiceForBot();
     }
   };
 
   const moveMyPiece = async (piece) => {
+    await untilUnpaused();
     let array = giveArrayForMovingPath(piece);
-    if (array.length < diceResult) {
+    if (array.length < gameState.diceResult) {
       await delay(500);
-      currentPlayerTurnStatus = true;
+      gameState.currentPlayerTurnStatus = true;
       nextTeamTurn();
       return false;
     }
@@ -451,7 +531,8 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   const giveEnemiesBehindMe = async () => {
-    let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
+    let currentTeamTurn =
+      gameState.playerTurns[gameState.currentPlayerTurnIndex];
     let indexOfPath = pathArray.findIndex((elem) => elem === piece.position);
     if (!indexOfPath) {
       return 0;
@@ -473,8 +554,8 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   const turnForBot = async () => {
-    if (isPaused) return;
-    let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
+    let currentTeamTurn =
+      gameState.playerTurns[gameState.currentPlayerTurnIndex];
     let totalUnlockedPieces = playerPieces.filter(
       (obj) => obj.team === currentTeamTurn && obj.status === 1
     );
@@ -483,15 +564,15 @@ window.addEventListener("DOMContentLoaded", () => {
     ).length;
     let isMoving = false;
 
-    if (totalUnlockedPieces.length === 0 && diceResult !== 6) {
+    if (totalUnlockedPieces.length === 0 && gameState.diceResult !== 6) {
       rollMyDice();
       return;
     }
 
-    currentPlayerTurnStatus = true;
+    gameState.currentPlayerTurnStatus = true;
     let piece_team = playerPieces.filter((obj) => obj.team === currentTeamTurn);
     // condition when bot has 0 pieces unlocked
-    if (totalUnlockedPieces.length === 0 && diceResult === 6) {
+    if (totalUnlockedPieces.length === 0 && gameState.diceResult === 6) {
       piece_team[0].unlockPiece();
       rollMyDice();
       return;
@@ -548,7 +629,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // condition when user has 1 unlocked pieces
     if (totalUnlockedPieces.length === 1) {
-      if (totalUnlockedPieces.length <= 3 && diceResult === 6) {
+      if (totalUnlockedPieces.length <= 3 && gameState.diceResult === 6) {
         lockedPieces[0].unlockPiece();
         rollMyDice();
         return;
@@ -561,7 +642,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (totalUnlockedPieces.length === 2) {
       if (
         totalUnlockedPieces.length <= 3 &&
-        diceResult === 6 &&
+        gameState.diceResult === 6 &&
         totalPiecesOfTheTeam >= 3
       ) {
         lockedPieces[0].unlockPiece();
@@ -586,7 +667,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      if (pieceSafe.length === 1) {
+      if (pieceSafe.length === 1 && pieceUnSafe.length >= 1) {
         if (!(await attemptMove(pieceUnSafe[0]))) return;
       }
 
@@ -627,7 +708,7 @@ window.addEventListener("DOMContentLoaded", () => {
         (obj) => !safePaths.includes(obj.position)
       );
 
-      if (pieceSafe.length === 0 && pieceUnSafe.length === 4) {
+      if (pieceSafe.length === 0 && pieceUnSafe.length === 3) {
         let scores = pieceUnSafe.map((p) => p.score);
         let greatestScore = Math.max(...scores);
         let movingPiece = pieceUnSafe.find(
@@ -636,7 +717,7 @@ window.addEventListener("DOMContentLoaded", () => {
         if (!(await attemptMove(movingPiece))) return;
       }
 
-      if (pieceSafe.length === 1) {
+      if (pieceSafe.length === 1 && pieceUnSafe.length > 0) {
         let scoreOfFirstPiece = pieceSafe[0].score;
         let scoreOfSecondPiece = pieceSafe[1].score;
 
@@ -692,11 +773,11 @@ window.addEventListener("DOMContentLoaded", () => {
           if (piecesNotAtHomePath.length > 0) {
             if (!(await attemptMove(piecesNotAtHomePath[0]))) return;
           } else {
-            for (let i = 0; i < piecesAtHomePath; i++) {
+            for (let i = 0; i < piecesAtHomePath.length; i++) {
               let movingPathArray = giveArrayForMovingPath(piecesAtHomePath[i]);
-              if (movingPathArray.length === diceResult) {
+              if (movingPathArray.length === gameState.diceResult) {
                 isMoving = true;
-                moveMyPiece(piecesAtHomePath[i]);
+                await moveMyPiece(piecesAtHomePath[i]);
                 break;
               }
             }
@@ -705,17 +786,27 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (!isMoving) {
-      nextTeamTurn();
+      const validPiece = totalUnlockedPieces.find(piece => {
+        const path = giveArrayForMovingPath(piece);
+        return path.length === gameState.diceResult;
+      });
+    
+      if (validPiece) {
+        await attemptMove(validPiece);
+        return;
+      }
     }
+    
   };
 
   const turnForUser = async (e) => {
-      if (isPaused) return;
     try {
-      let isUserTurn = playerTurns[currentPlayerTurnIndex] === playerColor;
-      let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
+      let isUserTurn =
+        gameState.playerTurns[gameState.currentPlayerTurnIndex] === playerColor;
+      let currentTeamTurn =
+        gameState.playerTurns[gameState.currentPlayerTurnIndex];
 
-      if (!isUserTurn || !currentPlayerTurnStatus) {
+      if (!isUserTurn || !gameState.currentPlayerTurnStatus) {
         return;
       }
 
@@ -742,7 +833,7 @@ window.addEventListener("DOMContentLoaded", () => {
         piece.movePiece(array);
         await delay(array.length * 175);
         cut.sentMeToBoard();
-        currentPlayerTurnStatus = true;
+        gameState.currentPlayerTurnStatus = true;
         return;
       }
 
@@ -751,7 +842,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (diceResult === 6 && piece.status === 0) {
+      if (gameState.diceResult === 6 && piece.status === 0) {
         piece.unlockPiece();
         return;
       }
@@ -760,16 +851,16 @@ window.addEventListener("DOMContentLoaded", () => {
       if (piece.status === 1) {
         let array = giveArrayForMovingPath(piece);
 
-        if (array.length < diceResult) {
+        if (array.length < gameState.diceResult) {
           await delay(500);
-          currentPlayerTurnStatus = true;
+          gameState.currentPlayerTurnStatus = true;
           nextTeamTurn();
           return;
         }
 
         piece.movePiece(array);
 
-        if (diceResult !== 6 && !teamHasBonus) {
+        if (gameState.diceResult !== 6 && !gameState.teamHasBonus) {
           nextTeamTurn();
         }
       }
@@ -783,24 +874,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
   rollDiceBtn.addEventListener("click", async () => {
     roll.play();
-    diceResult = Math.floor(Math.random() * 6) + 1;
-    if (!currentPlayerTurnStatus) return;
+    gameState.diceResult = Math.floor(Math.random() * 6) + 1;
+    if (!gameState.currentPlayerTurnStatus) return;
 
-    // diceResult = 6;
-    let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
+    let currentTeamTurn =
+      gameState.playerTurns[gameState.currentPlayerTurnIndex];
 
     rollDiceBtn.disabled = true;
     rollDice.src = rollDiceGif.src;
-    // currentPlayerTurnStatus = false;
-    // teamHasBonus = false;
 
     setTimeout(async () => {
-      rollDice.src = `../../assets/images/dice_${diceResult}.png`;
+      rollDice.src = `../../assets/images/dice_${gameState.diceResult}.png`;
       await delay(700);
       rollDiceBtn.disabled = false;
 
-      currentPlayerTurnStatus = true;
-      teamHasBonus = false;
+      gameState.currentPlayerTurnStatus = true;
+      gameState.teamHasBonus = false;
 
       let totalUnlockedPieces = playerPieces.filter(
         (obj) => obj.team === currentTeamTurn && obj.status === 1
@@ -808,11 +897,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (
         totalUnlockedPieces.length === 0 &&
-        diceResult !== 6 &&
-        !teamHasBonus
+        gameState.diceResult !== 6 &&
+        !gameState.teamHasBonus
       ) {
         await delay(500);
-        currentPlayerTurnStatus = true;
+        gameState.currentPlayerTurnStatus = true;
         nextTeamTurn();
       }
     }, 600);
@@ -820,45 +909,46 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const rollDiceForBot = () => {
     roll.play();
-    if (isPaused) return;
-    if (!currentPlayerTurnStatus) return;
+    if (!gameState.currentPlayerTurnStatus) return;
 
     rollDice.src = rollDiceGif.src;
-    diceResult = Math.floor(Math.random() * 6) + 1;
-    currentPlayerTurnStatus = false;
-    teamHasBonus = false;
+    gameState.diceResult = Math.floor(Math.random() * 6) + 1;
+    gameState.currentPlayerTurnStatus = false;
+    gameState.teamHasBonus = false;
 
     setTimeout(async () => {
-      rollDice.src = `../../assets/images/dice_${diceResult}.png`;
+      rollDice.src = `../../assets/images/dice_${gameState.diceResult}.png`;
       await delay(700);
       rollDiceBtn.disabled = false;
 
       turnForBot();
     }, 600);
   };
-    document.body.addEventListener("keydown", (e) => {
-      let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
-  
-      // Ensure only the current player can interact
-      if (currentTeamTurn !== playerColor) return;
-  
-      // Prevent default behavior (space scrolling etc.)
-      if ([" ", "Space", "1", "2", "3", "4"].includes(e.key)) {
-        e.preventDefault();
-      }
-  
-      // Handle piece selection
-      if (["1", "2", "3", "4"].includes(e.key)) {
-        const piece = document.querySelector(`[myPieceNum="${e.key}"]`);
-        piece?.click();
-      }
-  
-      // Handle dice roll on spacebar
-      if (e.key === " " || e.code === "Space") {
-        rollDiceBtn?.click();
-      }
-    });
-  
+  document.body.addEventListener("keydown", (e) => {
+    let currentTeamTurn =
+      gameState.playerTurns[gameState.currentPlayerTurnIndex];
+
+    // Ensure only the current player can interact
+    if (currentTeamTurn !== playerColor) return;
+
+    // Prevent default behavior (space scrolling etc.)
+    if ([" ", "Space", "1", "2", "3", "4"].includes(e.key)) {
+      e.preventDefault();
+    }
+
+    // Handle piece selection
+    if (["1", "2", "3", "4"].includes(e.key)) {
+      const piece = document.querySelector(`[myPieceNum="${e.key}"]`);
+      piece?.click();
+    }
+
+    // Handle dice roll on spacebar
+    if (e.key === " " || e.code === "Space") {
+      rollDiceBtn?.click();
+    }
+  });
+
+  console.log(gameState);
 });
 
 const click = new Audio(
@@ -871,8 +961,9 @@ const winPlay = new Audio(
   "../../assets/sound/mixkit-cheering-crowd-loud-whistle-610 (1).wav"
 );
 
+// winner declaration
 let declareWinner = (team) => {
-  winPlay.play()
+  winPlay.play();
   let parentDiv = document.createElement("div");
   let childDiv = document.createElement("div");
   let h1 = document.createElement("h1");
@@ -884,35 +975,49 @@ let declareWinner = (team) => {
   button.textContent = "🔁 Play Again";
   button.addEventListener("click", () => {
     location.reload();
-    winPlay.pause()
+    winPlay.pause();
   });
   childDiv.append(h1);
   childDiv.append(button);
   parentDiv.append(childDiv);
   document.body.append(parentDiv);
 };
-function toggleMenu() {
+function pauseGame() {
   const menu = document.getElementById("sidebar");
   const blurOverlay = document.querySelector(".blur-overlay");
-  menu.classList.toggle("open-sidebar");
-  blurOverlay.classList.toggle("show");
-  isPaused = true;
-  click.play()
+  menu.classList.add("open-sidebar");
+  blurOverlay.classList.add("show");
+  gameState.isPaused = true;
+  click.play();
 }
+
 function resumeGame() {
+  gameState.isPaused = false;
   const menu = document.getElementById("sidebar");
   const blurOverlay = document.querySelector(".blur-overlay");
-  menu.classList.toggle("open-sidebar");
-  blurOverlay.classList.toggle("show");
-  isPaused = false
-  lightClick.play()
+  const instructions = document.getElementById("instructions");
+  menu.classList.remove("open-sidebar");
+  blurOverlay.classList.remove("show");
+  instructions.classList.remove("show");
+  lightClick.play();
 }
+
 function restartGame() {
   location.reload();
-  lightClick.play()
+  lightClick.play();
 }
 function goToMainMenu() {
   localStorage.clear();
   window.location.href = "/game-setup.html";
-  lightClick.play()
+  lightClick.play();
+}
+function showInstructions() {
+  const instructions = document.getElementById("instructions");
+  instructions.classList.toggle("show");
+  lightClick.play();
+}
+function closeInstructions() {
+  const instructions = document.getElementById("instructions");
+  instructions.classList.remove("show");
+  lightClick.play();
 }

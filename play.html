@@ -18,11 +18,6 @@
   <body>
     <div class="ludoForceBoardGame">
       <nav>
-        <!-- <img
-          src="./assets/images/top-cover.svg"
-          alt="blue-cover"
-          class="top-bg"
-        /> -->
         <picture>
           <source
             media="(min-width: 1024px)"
@@ -40,8 +35,8 @@
           <img src="./assets/images/user-icon.svg" alt="user" class="user" />
           <p>user401</p>
         </div>
-        <button id="menuButton" class="open-menu" onclick="toggleMenu()">
-          <img src="./assets/images/hamburger.svg" alt="" class="hamburger"/>
+        <button id="menuButton" class="open-menu" onclick="pauseGame()">
+          <img src="./assets/images/hamburger.svg" alt="" class="hamburger" />
         </button>
         <aside id="sidebar" class="sidebar">
           <div class="menu">
@@ -174,6 +169,86 @@
         <button id="roll-btn">Roll Dice</button>
         <!-- <p id="dice-result">Roll: -</p> -->
       </div>
+      <!-- instructions -->
+      <section id="instructions" class="instructions">
+        <button onclick="closeInstructions()">
+          <img src="./assets/images/cancel.svg" alt="" class="cancel-ins" />
+        </button>
+        <div>🎲 <img src="./assets/images/ludoTxtSetup.svg" alt="" /></div>
+        <h2>How to Play Ludo Force</h2>
+        <p>
+          Welcome to Ludo Force! Here’s everything you need to know to get
+          started:
+        </p>
+
+        <h3>🔹 Objective:</h3>
+        <p>
+          Be the first team to move all <strong>4 pieces</strong> from your base
+          to your <strong>Home</strong>.
+        </p>
+
+        <h3>🔹 Game Setup:</h3>
+        <ol>
+          <li>Each team has <strong>4 tokens</strong>.</li>
+          <li>Teams take turns <strong>rolling the dice</strong>.</li>
+          <li>
+            You must roll a <strong>6</strong> to unlock a token from base.
+          </li>
+          <li>
+            Once unlocked, tokens follow a specific path around the board.
+          </li>
+          <li>
+            The final stretch is the <strong>home path</strong>—unique to each
+            team.
+          </li>
+        </ol>
+
+        <h3>🔹 Dice Rules:</h3>
+        <ol>
+          <li>Roll a <strong>6</strong> to unlock or get a bonus turn.</li>
+          <li>You get one roll per turn, unless you roll a 6.</li>
+          <li>If no moves are possible, the turn passes.</li>
+        </ol>
+
+        <h3>🔹 Movement:</h3>
+        <ol>
+          <li>Click on a token to move it after rolling the dice.</li>
+          <li>Tokens move based on the number shown on the dice.</li>
+          <li>
+            Tokens reaching the final spot (🏠) are safe and removed from the
+            board.
+          </li>
+        </ol>
+
+        <h3>🔹 Capturing:</h3>
+        <ol>
+          <li>
+            Landing on an opponent’s token
+            <strong>sends it back to base</strong> (unless on a safe square).
+          </li>
+          <li>This gives your team a <strong>bonus roll</strong>.</li>
+        </ol>
+
+        <h3>🔹 Safe Spots:</h3>
+        <ol>
+          <li>Tokens on safe spots <strong>cannot be captured</strong>.</li>
+        </ol>
+
+        <h3>🔹 Winning:</h3>
+        <p>
+          The first team to move <strong>all 4 tokens to Home</strong> wins the
+          game!
+        </p>
+
+        <h3>🔹 Tips:</h3>
+        <ol>
+          <li>Plan ahead—especially with multiple tokens on the board.</li>
+          <li>Use safe spots strategically.</li>
+          <li>Capturing opponents gives you an edge—go for it if it's safe!</li>
+        </ol>
+
+        <p>Let the game begin 🎉</p>
+      </section>
     </div>
     <script src="/js/games/ludo-force.js"></script>
   </body>
