@@ -15,7 +15,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const unlock = new Audio(
     "../../assets/sound/mixkit-martial-arts-fast-punch-2047.wav"
   );
-
   // console.log(red_house);
 
   //Initial variables
@@ -922,7 +921,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }, 600);
   };
 });
-
 document.addEventListener("keydown", (e) => {
   let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
 
@@ -951,7 +949,18 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+const click = new Audio(
+  "../../assets/sound/mixkit-revolver-chamber-spin-1674.wav"
+);
+const lightClick = new Audio(
+  "../../assets/sound/mixkit-lighter-wheel-spin-2641.wav"
+);
+const winPlay = new Audio(
+  "../../assets/sound/mixkit-cheering-crowd-loud-whistle-610 (1).wav"
+);
+
 let declareWinner = (team) => {
+  winPlay.play()
   let parentDiv = document.createElement("div");
   let childDiv = document.createElement("div");
   let h1 = document.createElement("h1");
@@ -960,9 +969,10 @@ let declareWinner = (team) => {
   parentDiv.setAttribute("id", "winner");
   h1.textContent = `${team} Won The Game`;
 
-  button.textContent = "Play Again";
+  button.textContent = "🔁 Play Again";
   button.addEventListener("click", () => {
     location.reload();
+    winPlay.pause()
   });
   childDiv.append(h1);
   childDiv.append(button);
@@ -975,6 +985,7 @@ function toggleMenu() {
   menu.classList.toggle("open-sidebar");
   blurOverlay.classList.toggle("show");
   isPaused = true;
+  click.play()
 }
 function resumeGame() {
   const menu = document.getElementById("sidebar");
@@ -982,11 +993,14 @@ function resumeGame() {
   menu.classList.toggle("open-sidebar");
   blurOverlay.classList.toggle("show");
   isPaused = false
+  lightClick.play()
 }
 function restartGame() {
   location.reload();
+  lightClick.play()
 }
 function goToMainMenu() {
   localStorage.clear();
   window.location.href = "/game-setup.html";
+  lightClick.play()
 }

@@ -53,7 +53,7 @@
   position: relative;
 }
 .ludoTxt {
-  width: 80px;
+  width: clamp(50px, 6vw, 80px);
   position: absolute;
   left: 50%;
   top: 50%;
@@ -61,8 +61,8 @@
   z-index: 1;
 }
 .dice {
-  width: 50px;
-  height: 50px;
+  width: clamp(40px, 4vw, 80px);
+  height: clamp(40px, 4vw, 80px);
   position: absolute;
   left: 50%;
   top: 50%;
@@ -145,7 +145,6 @@
     filter: brightness(1.4);
   }
 }
-
 #roll-btn {
   margin-top: 20px;
 }
@@ -239,6 +238,10 @@
   top: 0;
   width: 100%;
 }
+picture {
+  width: 100%;
+  height: auto;
+}
 .roll-dice {
   position: absolute;
   bottom: 20px;
@@ -263,12 +266,12 @@
   gap: 20px;
 }
 .user-board img {
-  width: 100px;
+  width: clamp(60px, 6vw, 100px);
 }
 .user-board p {
   color: var(--blue-sec);
   font-weight: 600;
-  font-size: 22px;
+  font-size: clamp(16px, 4vw, 22px);
 }
 .text-blink {
   animation: blink 0.7s ease-in-out 0.1s;
@@ -326,14 +329,19 @@
 }
 .sidebar {
   position: relative;
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
 }
 nav {
   position: relative;
   z-index: 999;
 }
 .open-sidebar {
-  display: block;
+  opacity: 1;
+  visibility: visible;
 }
 .menu {
   width: 300px;
@@ -370,7 +378,7 @@ nav {
   right: 10px;
 }
 .open-menu img {
-  width: 30px;
+  width: clamp(25px, 6vw, 30px);
 }
 .blur-overlay {
   position: fixed;
@@ -420,5 +428,8 @@ nav {
     top: 180px;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+  .user-board {
+    left: 15px;
   }
 }

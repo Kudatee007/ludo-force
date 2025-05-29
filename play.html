@@ -18,22 +18,34 @@
   <body>
     <div class="ludoForceBoardGame">
       <nav>
-        <img
+        <!-- <img
           src="./assets/images/top-cover.svg"
           alt="blue-cover"
           class="top-bg"
-        />
+        /> -->
+        <picture>
+          <source
+            media="(min-width: 1024px)"
+            srcset="./assets/images/top-cover.svg"
+            type="image/svg+xml"
+            class="top-bg"
+          />
+          <img
+            src="./assets/images/top-cover-moblie.svg"
+            alt="mushrooms foraging"
+            class="top-bg"
+          />
+        </picture>
         <div class="user-board">
           <img src="./assets/images/user-icon.svg" alt="user" class="user" />
           <p>user401</p>
         </div>
         <button id="menuButton" class="open-menu" onclick="toggleMenu()">
-          <img src="./assets/images/hamburger.svg" alt="" />
+          <img src="./assets/images/hamburger.svg" alt="" class="hamburger"/>
         </button>
         <aside id="sidebar" class="sidebar">
           <div class="menu">
             <ul>
-              <!-- <li><button onclick="togglePause()">⏸️ Pause</button></li> -->
               <li><button onclick="resumeGame()">▶️ Resume</button></li>
               <li><button onclick="restartGame()">🔁 Play Again</button></li>
               <li>
