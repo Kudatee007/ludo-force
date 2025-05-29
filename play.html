@@ -17,24 +17,36 @@
   </head>
   <body>
     <div class="ludoForceBoardGame">
-      <img
-        src="./assets/images/top-cover.svg"
-        alt="blue-cover"
-        class="top-bg"
-      />
-      <div class="user-board">
-        <img src="./assets/images/user-icon.svg" alt="user" class="user" />
-        <p>user401</p>
-      </div>
-      <!-- <h1>Ludo Force</h1> -->
-      <!-- red bot dice -->
-      <div class="red-bot">
-        <p class="user-name">You</p>
-      </div>
-      <!-- blue-bot dice -->
-      <div class="blue-bot">
-        <p class="user-name">Bot</p>
-      </div>
+      <nav>
+        <img
+          src="./assets/images/top-cover.svg"
+          alt="blue-cover"
+          class="top-bg"
+        />
+        <div class="user-board">
+          <img src="./assets/images/user-icon.svg" alt="user" class="user" />
+          <p>user401</p>
+        </div>
+        <button id="menuButton" class="open-menu" onclick="toggleMenu()">
+          <img src="./assets/images/hamburger.svg" alt="" />
+        </button>
+        <aside id="sidebar" class="sidebar">
+          <div class="menu">
+            <ul>
+              <!-- <li><button onclick="togglePause()">⏸️ Pause</button></li> -->
+              <li><button onclick="resumeGame()">▶️ Resume</button></li>
+              <li><button onclick="restartGame()">🔁 Play Again</button></li>
+              <li>
+                <button onclick="showInstructions()">❓ Instructions</button>
+              </li>
+              <li><button onclick="goToMainMenu()">🏠 Main Menu</button></li>
+            </ul>
+          </div>
+        </aside>
+      </nav>
+      <!-- blur overlay (initially hidden) -->
+      <div class="blur-overlay"></div>
+
       <section class="game-area" id="game-area">
         <div id="game-board" class="game-board">
           <!-- Blue side -->
@@ -145,15 +157,6 @@
           </div>
         </div>
       </section>
-
-      <!-- red bot dice -->
-      <!-- <div class="yellow-bot">
-        <p class="user-name">Bot</p>
-      </div> -->
-      <!-- blue-bot dice -->
-      <!-- <div class="green-bot">
-        <p class="user-name">Bot</p>
-      </div> -->
       <!-- roll dice -->
       <div class="roll-dice">
         <button id="roll-btn">Roll Dice</button>

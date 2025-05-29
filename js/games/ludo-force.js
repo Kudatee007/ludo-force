@@ -25,6 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let currentPlayerTurnStatus = true;
   let teamHasBonus = false;
   let allTokens = [];
+  let isPaused = false;
 
   let diceResult;
   // const Player = new Token(position, boardColor, 0, 0, homePathEntry, gameEntry);
@@ -91,11 +92,11 @@ window.addEventListener("DOMContentLoaded", () => {
   // };
 
   let homePathEntries = {
-  red: ["rh1", "rh2", "rh3", "rh4", "rh5", "home"],
-  blue: ["bh1", "bh2", "bh3", "bh4", "bh5", "home"],
-  green: ["gh1", "gh2", "gh3", "gh4", "gh5", "home"],
-  yellow: ["yh1", "yh2", "yh3", "yh4", "yh5", "home"],
-};
+    red: ["rh1", "rh2", "rh3", "rh4", "rh5", "home"],
+    blue: ["bh1", "bh2", "bh3", "bh4", "bh5", "home"],
+    green: ["gh1", "gh2", "gh3", "gh4", "gh5", "home"],
+    yellow: ["yh1", "yh2", "yh3", "yh4", "yh5", "home"],
+  };
 
   let safePaths = [
     ...homePathEntries.blue,
@@ -532,7 +533,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let lastSixPath = [];
 
-for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 6; i++) {
       let index = (indexOfPath - i + pathArray.length) % pathArray.length;
       lastSixPath.push(pathArray[index]);
     }
@@ -546,6 +547,7 @@ for (let i = 1; i <= 6; i++) {
   };
 
   const turnForBot = async () => {
+    if (isPaused) return;
     let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
     let totalUnlockedPieces = playerPieces.filter(
       (obj) => obj.team === currentTeamTurn && obj.status === 1
@@ -793,6 +795,7 @@ for (let i = 1; i <= 6; i++) {
   };
 
   const turnForUser = async (e) => {
+      if (isPaused) return;
     try {
       let isUserTurn = playerTurns[currentPlayerTurnIndex] === playerColor;
       let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
@@ -902,6 +905,7 @@ for (let i = 1; i <= 6; i++) {
 
   const rollDiceForBot = () => {
     roll.play();
+    if (isPaused) return;
     if (!currentPlayerTurnStatus) return;
 
     rollDice.src = rollDiceGif.src;
@@ -942,11 +946,10 @@ document.addEventListener("keydown", (e) => {
     let piece = document.querySelector(`[myPieceNum="4"]`);
     piece?.click();
   }
- if (e.key === " " || e.code === "Space") {
-  rollDiceBtn.click();
-}
+  if (e.key === " " || e.code === "Space") {
+    rollDiceBtn.click();
+  }
 });
-
 
 let declareWinner = (team) => {
   let parentDiv = document.createElement("div");
@@ -966,3 +969,24 @@ let declareWinner = (team) => {
   parentDiv.append(childDiv);
   document.body.append(parentDiv);
 };
+function toggleMenu() {
+  const menu = document.getElementById("sidebar");
+  const blurOverlay = document.querySelector(".blur-overlay");
+  menu.classList.toggle("open-sidebar");
+  blurOverlay.classList.toggle("show");
+  isPaused = true;
+}
+function resumeGame() {
+  const menu = document.getElementById("sidebar");
+  const blurOverlay = document.querySelector(".blur-overlay");
+  menu.classList.toggle("open-sidebar");
+  blurOverlay.classList.toggle("show");
+  isPaused = false
+}
+function restartGame() {
+  location.reload();
+}
+function goToMainMenu() {
+  localStorage.clear();
+  window.location.href = "/game-setup.html";
+}
