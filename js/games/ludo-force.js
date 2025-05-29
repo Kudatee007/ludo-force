@@ -836,33 +836,29 @@ window.addEventListener("DOMContentLoaded", () => {
       turnForBot();
     }, 600);
   };
-});
-document.addEventListener("keydown", (e) => {
-  let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
-
-  if (currentTeamTurn !== playerColor) {
-    return;
-  }
-
-  if (e.key === 1) {
-    let piece = document.querySelector(`[myPieceNum="1"]`);
-    piece?.click();
-  }
-  if (e.key === 2) {
-    let piece = document.querySelector(`[myPieceNum="2"]`);
-    piece?.click();
-  }
-  if (e.key === 3) {
-    let piece = document.querySelector(`[myPieceNum="3"]`);
-    piece?.click();
-  }
-  if (e.key === 4) {
-    let piece = document.querySelector(`[myPieceNum="4"]`);
-    piece?.click();
-  }
-  if (e.key === " " || e.code === "Space") {
-    rollDiceBtn.click();
-  }
+    document.body.addEventListener("keydown", (e) => {
+      let currentTeamTurn = playerTurns[currentPlayerTurnIndex];
+  
+      // Ensure only the current player can interact
+      if (currentTeamTurn !== playerColor) return;
+  
+      // Prevent default behavior (space scrolling etc.)
+      if ([" ", "Space", "1", "2", "3", "4"].includes(e.key)) {
+        e.preventDefault();
+      }
+  
+      // Handle piece selection
+      if (["1", "2", "3", "4"].includes(e.key)) {
+        const piece = document.querySelector(`[myPieceNum="${e.key}"]`);
+        piece?.click();
+      }
+  
+      // Handle dice roll on spacebar
+      if (e.key === " " || e.code === "Space") {
+        rollDiceBtn?.click();
+      }
+    });
+  
 });
 
 const click = new Audio(
