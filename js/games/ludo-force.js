@@ -27,7 +27,6 @@ window.addEventListener("DOMContentLoaded", () => {
   let isPaused = false;
 
   let diceResult;
-  // const Player = new Token(position, boardColor, 0, 0, homePathEntry, gameEntry);
 
   const pathArray = [
     "r1",
@@ -83,12 +82,6 @@ window.addEventListener("DOMContentLoaded", () => {
     "y12",
     "y13",
   ];
-  // let homePathEntries = {
-  //   red: ["rh1", "rh2", "rh3", "rh4", "rh5"],
-  //   blue: ["bh1", "bh2", "bh3", "bh4", "bh5"],
-  //   green: ["gh1", "gh2", "gh3", "gh4", "gh5"],
-  //   yellow: ["yh1", "yh2", "yh3", "yh4", "yh5"],
-  // };
 
   let homePathEntries = {
     red: ["rh1", "rh2", "rh3", "rh4", "rh5", "home"],
@@ -115,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
       this.team = team;
       this.position = position;
       this.score = score;
-      this.homePathEntry = homePathEntry; // Number
+      this.homePathEntry = homePathEntry;
       this.id = PlayerId;
       this.gameEntry = gameEntry;
       this.status = 0; // when true
@@ -137,41 +130,13 @@ window.addEventListener("DOMContentLoaded", () => {
     updatePosition(position) {
       this.position = position;
     }
-    // movePiece(array) {
-    //   let filteredArray = array;
-    //   let mainPathLength = 51;
-    //   const hasCompletedMainLoop = this.stepsMoved >= mainPathLength;
-    //   console.log(hasCompletedMainLoop);
-
-    //   if (hasCompletedMainLoop && array.includes(this.homePathEntry)) {
-    //     let indexOfPathEntry = array.findIndex(
-    //       (obj) => obj === this.homePathEntry
-    //     );
-    //     let newSlicedArray = array.slice(0, indexOfPathEntry);
-
-    //     if (newSlicedArray.length < diceResult) {
-    //       let remainingLength = diceResult - newSlicedArray.length;
-    //       let secondPart = homePathEntries[this.team].slice(0, remainingLength);
-    //       newSlicedArray = newSlicedArray.concat(secondPart);
-    //     }
-
-    //     filteredArray = newSlicedArray;
-    //   }
-
-    //   if (filteredArray.includes("home")) {
-    //     teamHasBonus = true;
-    //   }
-
-    //   tokenToMove(this.id, filteredArray);
-    //   this.score += filteredArray.length;
-    // }
 
     movePiece(array) {
       let fullMovePath = [...array];
       const mainPathLength = 50;
       const lastHomePos = homePathEntries[this.team].at(-1);
 
-      // ✅ CASE 1: Already inside the home path
+      // CASE 1: Already inside the home path
       if (homePathEntries[this.team].includes(this.position)) {
         const currentIndex = homePathEntries[this.team].indexOf(this.position);
         const nextSteps = homePathEntries[this.team].slice(
@@ -190,7 +155,7 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // ✅ CASE 2: Still on main path (your existing logic)
+      // CASE 2: Still on main path (your existing logic)
       let stepsOnMain = fullMovePath.filter((pos) =>
         pathArray.includes(pos)
       ).length;
@@ -201,7 +166,7 @@ window.addEventListener("DOMContentLoaded", () => {
         let mainPathSegment = fullMovePath.slice(0, stepsToHomeEntry);
         let remainingSteps = diceResult - mainPathSegment.length;
 
-        // 🔥 Ensure the full 6-step home path can be entered
+        //  Ensure the full 6-step home path can be entered
         let homePath = homePathEntries[this.team];
         let homeSegment = homePath.slice(0, remainingSteps);
 
@@ -217,7 +182,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         // Hide the token or mark as complete
         const tokenEl = document.querySelector(`[piece_id="${this.id}"]`);
-        tokenEl.style.display = "none"; // or move it to a "home" area
+        tokenEl.style.display = "none";
         this.status = 2; // status = 2 means 'finished'
       }
 
@@ -231,8 +196,6 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log("Checking win for team:", this.team);
       console.log("All tokens:", allTokens);
     }
-
-    enterHomePath(stepsIntoHome) {}
 
     // function to return the piece to the locked position when killed
     sentMeToBoard() {
@@ -289,7 +252,6 @@ window.addEventListener("DOMContentLoaded", () => {
   }
   playerTurns = [...colorsToUse];
 
-  // let numberOfPlayers = 0;
   let playerPieces = [];
 
   colorsToUse.forEach((color) => {
@@ -301,26 +263,9 @@ window.addEventListener("DOMContentLoaded", () => {
     const parentDiv = document.createElement("div");
     parentDiv.classList.add("board");
 
-    // const userTurnDiv = document.createElement("p");
-    // const userTurn = document.createElement("p");
-
-    // userTurnDiv.classList.add('yellow-bot')
-    // userTurn.classList.add('user-name')
-    // userTurn.textContent = 'you'
-
-    // for (let i = 0; i < numberOfPlayers; i++) {
-    // let boardColor = boardDetails[i].boardColor;
-    // let homePathEntry = boardDetails[i].homePathEntry;
-    // let gameEntry = boardDetails[i].gameEntry;
-
     for (let i = 0; i < 4; i++) {
       const span = document.createElement("span");
       const icon = document.createElement("i");
-      // icon.style.  transform = "translate(-50%, -50%)";
-      // icon.style.fontSize = "200px"
-      // icon.src ="/images/icon.svg"
-      // icon.alt = `${boardColor} piece`
-      // icon.classList.add("piece", `${boardColor}-piece`)
       icon.classList.add(
         "fa-duotone",
         "fa-solid",
@@ -335,8 +280,6 @@ window.addEventListener("DOMContentLoaded", () => {
       span.setAttribute("id", position);
       icon.setAttribute("piece_id", pieceID);
 
-      // icon.setAttribute("piece_id", `${boardColor}-${i}`);
-      // span.classList.add("token", `${boardColor}-piece`);
       icon.addEventListener("click", (e) => {
         turnForUser(e);
       });
@@ -351,33 +294,17 @@ window.addEventListener("DOMContentLoaded", () => {
         0,
         homePathEntry,
         pieceID,
-        gameEntry // <- This is extra
+        gameEntry
       );
       playerPieces.push(player);
       span.append(icon);
       parentDiv.append(span);
-      // console.log(span);
       allTokens.push(player);
     }
 
     boardObj.board.append(parentDiv);
-    // userTurnDiv.append(userTurn)
-    // document.body.append(userTurnDiv)
-    // }
   });
-  // if (
-  //   (numberOfPlayers == 2 && playerColor == "red") ||
-  //   (numberOfPlayers == 2 && playerColor == "green")
-  // ) {
-  //   playerTurns = ["red", "green"];
-  // } else if (
-  //   (numberOfPlayers == 2 && playerColor == "blue") ||
-  //   (numberOfPlayers == 2 && playerColor == "yellow")
-  // ) {
-  //   playerTurns = ["yellow", "blue"];
-  // } else {
-  //   playerTurns = ["red", "blue", "green", "yellow"];
-  // }
+
 
   currentPlayerTurnIndex = playerTurns.indexOf(playerColor);
   console.log(currentPlayerTurnIndex);
@@ -641,8 +568,6 @@ window.addEventListener("DOMContentLoaded", () => {
         rollDiceForBot();
         return;
       }
-      // let piece = totalUnlockedPieces.find(obj=>obj.status === 1)
-      // if(!await attemptMove(piece));
       let pieceSafe = totalUnlockedPieces.filter((obj) =>
         safePaths.includes(obj.position)
       );
@@ -703,17 +628,8 @@ window.addEventListener("DOMContentLoaded", () => {
       );
 
       if (pieceSafe.length === 0 && pieceUnSafe.length === 4) {
-        // let scoreOfFirstPiece = pieceSafe[0].score;
-        // let scoreOfSecondPiece = pieceSafe[1].score;
-        // let scoreOfThirdPiece = pieceSafe[2].score;
         let scores = pieceUnSafe.map((p) => p.score);
         let greatestScore = Math.max(...scores);
-
-        // let greatestScore = Math.max(
-        //   scoreOfFirstPiece,
-        //   scoreOfSecondPiece,
-        //   scoreOfThirdPiece
-        // );
         let movingPiece = pieceUnSafe.find(
           (obj) => obj.score === greatestScore
         );
