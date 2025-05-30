@@ -1,3 +1,4 @@
+// gamestate object
 const gameState = {
   playerTurns: [],
   currentPlayerTurnIndex: 0,
@@ -13,7 +14,6 @@ const gameState = {
 
 // importing all boards
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM fully loaded");
   const green_house = document.getElementById("green-house");
   const blue_house = document.getElementById("blue-house");
   const yellow_house = document.getElementById("yellow-house");
@@ -119,6 +119,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // safe-path movement for token/piece
   let safePaths = [
+    "r1",
+    "b1",
+    "g1",
+    "y1",
     ...homePathEntries.red,
     ...homePathEntries.blue,
     ...homePathEntries.green,
@@ -186,13 +190,13 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         tokenToMove(this.id, nextSteps);
-        updateOverlapCounts();
+        // updateOverlapCounts(somePosition, someIconElement);
         this.position = nextSteps.at(-1);
         this.score += nextSteps.length;
         return;
       }
 
-      // CASE 2: Still on main path (your existing logic)
+      // CASE 2: Still on main path
       let stepsOnMain = fullMovePath.filter((pos) =>
         pathArray.includes(pos)
       ).length;
@@ -255,28 +259,27 @@ window.addEventListener("DOMContentLoaded", () => {
       check();
     });
 
-    const updateOverlapCounts =()=> {
-      // First clear all existing counts and text on pieces
-      document.querySelectorAll(".piece").forEach((icon) => {
-        icon.removeAttribute("data-overlap-count");
-        icon.textContent = "";
-      });
-  
-      const piecesOnCell = playerPieces.filter(
-        (piece) => piece.position === position
-      );
-      const count = piecesOnCell.length;
-      console.log(count);
-      
-      if (count > 1) {
-        icon.setAttribute("data-overlap-count", count);
-        icon.textContent = count; // Show the count on the icon
-      } else {
-        icon.removeAttribute("data-overlap-count");
-        icon.textContent = ""; // clear text if only 1 piece
-      }
-      
-    }
+  // const updateOverlapCounts = (position, icon) => {
+  //   // First clear all existing counts and text on pieces
+  //   document.querySelectorAll(".piece").forEach((icon) => {
+  //     icon.removeAttribute("data-overlap-count");
+  //     icon.textContent = "";
+  //   });
+
+  //   const piecesOnCell = playerPieces.filter(
+  //     (piece) => piece.position === position
+  //   );
+  //   const count = piecesOnCell.length;
+  //   console.log(count);
+
+  //   if (count > 1) {
+  //     icon.setAttribute("data-overlap-count", count);
+  //     icon.textContent = count; // Show the count on the icon
+  //   } else {
+  //     icon.removeAttribute("data-overlap-count");
+  //     icon.textContent = ""; // clear text if only 1 piece
+  //   }
+  // };
 
   const boardDetails = [
     {
@@ -353,7 +356,6 @@ window.addEventListener("DOMContentLoaded", () => {
       icon.addEventListener("click", (e) => {
         turnForUser(e);
       });
-      
 
       if (boardColor === playerColor) {
         icon.setAttribute("myPieceNum", i + 1);
@@ -425,6 +427,7 @@ window.addEventListener("DOMContentLoaded", () => {
     let indexOfPath;
     let movingArray = [];
 
+    // Case 1 — Piece is NOT on shared main path
     if (!pathArray.includes(piece.position)) {
       indexOfPath = homePathEntries[piece.team].findIndex(
         (elem) => elem === piece.position
@@ -438,7 +441,7 @@ window.addEventListener("DOMContentLoaded", () => {
         } else {
           break; // exit the loop if the end of the home path array is reached
         }
-      }
+      } // Case 2 — Piece is on main shared path
     } else {
       indexOfPath = pathArray.findIndex((elem) => elem === piece.position);
 
@@ -465,8 +468,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (array[index] === "home") {
         let indexOfPiece = playerPieces.findIndex((obj) => obj.id === piece.id);
-        playerPieces.splice(indexOfPiece, 1);
-        tokenToMove.remove();
+        playerPieces.splice(indexOfPiece, 1); // Remove from active pieces
+        tokenToMove.remove(); // Remove from UI
         toBreak = true;
 
         let totalPiecesOfTeam = playerPieces.filter(
@@ -530,11 +533,11 @@ window.addEventListener("DOMContentLoaded", () => {
     return true;
   };
 
-  const giveEnemiesBehindMe = async () => {
+  const giveEnemiesBehindMe = async (piece) => {
     let currentTeamTurn =
       gameState.playerTurns[gameState.currentPlayerTurnIndex];
     let indexOfPath = pathArray.findIndex((elem) => elem === piece.position);
-    if (!indexOfPath) {
+    if (indexOfPath === -1) {
       return 0;
     }
 
@@ -554,24 +557,35 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   const turnForBot = async () => {
+    // Grabs the team whose turn it is currently (e.g., "red" or "blue").
     let currentTeamTurn =
       gameState.playerTurns[gameState.currentPlayerTurnIndex];
+
+    // Filters all unlocked pieces (status === 1) for the bot's team.
     let totalUnlockedPieces = playerPieces.filter(
       (obj) => obj.team === currentTeamTurn && obj.status === 1
     );
+
+    //Gets the total number of pieces that belong to the bot’s team.
     let totalPiecesOfTheTeam = playerPieces.filter(
       (obj) => obj.team === currentTeamTurn
     ).length;
+
+    // A flag to track whether the bot actually moved a piece or not.
     let isMoving = false;
 
+    // If no pieces are unlocked and the bot didn’t roll a 6 (which is required to unlock), end turn and re-roll (to pass turn).
     if (totalUnlockedPieces.length === 0 && gameState.diceResult !== 6) {
       rollMyDice();
       return;
     }
 
     gameState.currentPlayerTurnStatus = true;
+
+    // Gets all pieces belonging to the current team.
     let piece_team = playerPieces.filter((obj) => obj.team === currentTeamTurn);
-    // condition when bot has 0 pieces unlocked
+
+    // condition when bot has 0 pieces unlocked and diceresult = 6
     if (totalUnlockedPieces.length === 0 && gameState.diceResult === 6) {
       piece_team[0].unlockPiece();
       rollMyDice();
@@ -590,6 +604,11 @@ window.addEventListener("DOMContentLoaded", () => {
       }
 
       let array = giveArrayForMovingPath(totalUnlockedPieces[i]);
+
+      // Skip pieces that cannot move because dice roll > steps left to home
+      if (array.length < gameState.diceResult) {
+        continue;
+      }
       let cut = opponentPieces.find(
         (obj) =>
           obj.position === array[array.length - 1] &&
@@ -609,6 +628,7 @@ window.addEventListener("DOMContentLoaded", () => {
         await delay(array.length * 175);
         bonusReached = true;
         rollMyDice(true);
+        return;
       }
     }
 
@@ -620,7 +640,8 @@ window.addEventListener("DOMContentLoaded", () => {
       (obj) => obj.team === currentTeamTurn && obj.status === 0
     );
     const attemptMove = async (piece) => {
-      if (!(await moveMyPiece(piece))) {
+      const moved = await moveMyPiece(piece);
+      if (!moved) {
         return false;
       }
       isMoving = true;
@@ -629,13 +650,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // condition when user has 1 unlocked pieces
     if (totalUnlockedPieces.length === 1) {
-      if (totalUnlockedPieces.length <= 3 && gameState.diceResult === 6) {
+      if (
+        totalUnlockedPieces.length <= 3 &&
+        gameState.diceResult === 6 &&
+        lockedPieces.length > 0
+      ) {
         lockedPieces[0].unlockPiece();
         rollMyDice();
         return;
       }
       let piece = totalUnlockedPieces.find((obj) => obj.status === 1);
-      if (!(await attemptMove(piece)));
+      if (!(await attemptMove(piece))) return;
     }
 
     // condition when user has 2 unlocked pieces
@@ -643,7 +668,8 @@ window.addEventListener("DOMContentLoaded", () => {
       if (
         totalUnlockedPieces.length <= 3 &&
         gameState.diceResult === 6 &&
-        totalPiecesOfTheTeam >= 3
+        totalPiecesOfTheTeam >= 3 &&
+        lockedPieces.length > 0
       ) {
         lockedPieces[0].unlockPiece();
         rollDiceForBot();
@@ -680,20 +706,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (pieceSafe.length === 2) {
         let scoreOfFirstPiece = pieceSafe[0].score;
-        let opponentsBeforeFirstPiece = giveEnemiesBehindMe(pieceSafe[0]);
+        let opponentsBeforeFirstPiece = await giveEnemiesBehindMe(pieceSafe[0]);
 
         let scoreOfSecondPiece = pieceSafe[1].score;
-        let opponentsBeforeSecondPiece = giveEnemiesBehindMe(pieceSafe[1]);
+        let opponentsBeforeSecondPiece = await giveEnemiesBehindMe(
+          pieceSafe[1]
+        );
 
+        // Prioritize moving the piece with more enemies behind or higher score
         if (opponentsBeforeFirstPiece > opponentsBeforeSecondPiece) {
-          if (!(await attemptMove(pieceSafe[1]))) return;
-        } else if (opponentsBeforeSecondPiece > opponentsBeforeFirstPiece) {
           if (!(await attemptMove(pieceSafe[0]))) return;
-        } else if (opponentsBeforeFirstPiece === opponentsBeforeSecondPiece) {
-          if (scoreOfSecondPiece > scoreOfFirstPiece) {
-            if (!(await attemptMove(pieceSafe[1]))) return;
-          } else {
+        } else if (opponentsBeforeSecondPiece > opponentsBeforeFirstPiece) {
+          if (!(await attemptMove(pieceSafe[1]))) return;
+        } else {
+          if (scoreOfFirstPiece <= scoreOfSecondPiece) {
             if (!(await attemptMove(pieceSafe[0]))) return;
+          } else {
+            if (!(await attemptMove(pieceSafe[1]))) return;
           }
         }
       }
@@ -719,12 +748,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (pieceSafe.length === 1 && pieceUnSafe.length > 0) {
         let scoreOfFirstPiece = pieceSafe[0].score;
-        let scoreOfSecondPiece = pieceSafe[1].score;
+        let scoreOfSecondPiece = pieceUnSafe[0].score;
 
         if (scoreOfSecondPiece > scoreOfFirstPiece) {
-          if (!(await attemptMove(pieceUnSafe[1]))) return;
-        } else {
           if (!(await attemptMove(pieceUnSafe[0]))) return;
+        } else {
+          if (!(await attemptMove(pieceSafe[0]))) return;
         }
       }
 
@@ -786,17 +815,16 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (!isMoving) {
-      const validPiece = totalUnlockedPieces.find(piece => {
+      const validPiece = totalUnlockedPieces.find((piece) => {
         const path = giveArrayForMovingPath(piece);
         return path.length === gameState.diceResult;
       });
-    
+
       if (validPiece) {
         await attemptMove(validPiece);
         return;
       }
     }
-    
   };
 
   const turnForUser = async (e) => {
